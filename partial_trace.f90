@@ -6,7 +6,8 @@ subroutine partial_trace(rho, d, di, nss, ssys, dr, rhor)  ! Returns the partial
 implicit none
 integer :: nss  ! Number of sub-systems
 integer :: di(1:nss)  ! Vector specifying the dimensions of the sub-systems
-integer :: ssys(1:nss)  ! Vector specifying the sub-systems to be traced out
+integer :: ssys(1:nss)  ! Vector (with components equal to 0 or 1) specifying the sub-systems to be traced out. 
+                        ! If ssys(j)=0 the j-th subsystem is traced out. If ssys(j)=1 the j-th subsystem is NOT traced out
 integer :: d ! Total dimension (is the product of the sub-systems dimensions)
 complex(8) :: rho(1:d,1:d)  ! Total matrix (given as input)
 integer :: dr  ! Dimension of the reduced matrix (is the product of the dimensions of the sub-systems we shall not trace out)
@@ -104,16 +105,16 @@ do m = 1, da ;   do o = 1, dc ;   ck = (m-1)*dc+o ;   cck = (m-1)*db*dc+o
 enddo ;   enddo ;   enddo ;   enddo
 
 end
-!-----------------------------------------------------------------------------------------------------------------------------------
 !###################################################################################################################################
 ! The next four subroutines are used, and needed, for computing the partial trace for general multi-partite systems 
 ! (for the HERMITIAN case)
 !-----------------------------------------------------------------------------------------------------------------------------------
 subroutine partial_trace_he(rho, d, di, nss, ssys, dr, rhor)  ! Returns the partial trace for general multipartite systems
 implicit none
-integer :: nss  ! Number of sub-systems
+integer :: nss  ! Number of subsystems
 integer :: di(1:nss)  ! Vector specifying the dimensions of the sub-systems
-integer :: ssys(1:nss)  ! Vector specifying the sub-systems to be traced out
+integer :: ssys(1:nss)  ! Vector (with components equal to 0 or 1) specifying the subsystems to be traced out. 
+                        ! If ssys(j) = 0 the j-th subsystem is traced out. If ssys(j) = 1 it is NOT traced out.
 integer :: d ! Total dimension (is the product of the sub-systems dimensions)
 complex(8) :: rho(1:d,1:d)  ! Total matrix (given as input)
 integer :: dr  ! Dimension of the reduced matrix (is the product of the dimensions of the sub-systems we shall not trace out)
@@ -137,8 +138,6 @@ else if ( nss >= 3 ) then
     else if ( l > 0 ) then
       if ( l == 1 ) then ;   da = di(1) ;   else ;   da = product(di(1:l)) ;  endif ;   db = d/da
       allocate( mat1(1:db,1:db) ) ;   call partial_trace_a_he(rho, da, db, mat1)
-      !!!!! To test the PTr with Bloch parametrization, comment the last line and uncomment the next one
-      !allocate( mat1(1:db,1:db) ) ;   call partial_trace_a_bloch(rho, da, db, mat1)
       d = db  ! After this operation, the matrix left over is mat1, whose dimension is d = db  
       rhored = mat1    
     endif
@@ -150,8 +149,6 @@ else if ( nss >= 3 ) then
     else if ( k < (nss+1) ) then
       if ( k == nss ) then ;   db = di(nss) ;   else ;   db = product(di(k:nss)) ;  endif ;   da = d/db
       allocate( mat2(1:da,1:da) ) ;   call partial_trace_b_he(mat1, da, db, mat2) ;   deallocate( mat1 )
-      !!!!! To test the PTr with Bloch parametrization, comment the last line and uncomment the next one
-      !allocate( mat2(1:da,1:da) ) ;   call partial_trace_b_bloch(mat1, da, db, mat2) ;   deallocate( mat1 )
       d = da  ! After this operation, the matrix left over is mat2, whose dimension is d = da
       rhored = mat2
     endif
