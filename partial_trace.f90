@@ -69,7 +69,9 @@ complex(8) :: rho_b(1:db,1:db)  !  Reduced matrix
 integer :: j, k, l  ! Auxiliary variable for counters
 
 rho_b = (0.d0,0.d0)
-do j = 1, db ; do k = 1, db ; do l = 1, da ;   rho_b(j,k) = rho_b(j,k) + rho((j-1)*da+l,(k-1)*da+l) ;   enddo ; enddo ; enddo
+do j = 1, db ; do k = 1, db ; 
+  do l = 1, da ;   rho_b(j,k) = rho_b(j,k) + rho((l-1)*db+j,(l-1)*db+k) ;   enddo
+enddo ; enddo
 
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
@@ -81,7 +83,9 @@ complex(8) :: rho_a(1:da,1:da)  !  Reduced matrix
 integer :: j, k, l  ! Auxiliary variables for counters
 
 rho_a = (0.d0,0.d0)
-do j = 1, da ; do k = 1, da ; do l = 1, db ;   rho_a(j,k) = rho_a(j,k) + rho((j-1)*db+l,(k-1)*db+l) ;   enddo ; enddo ; enddo
+do j = 1, da ; do k = 1, da 
+  do l = 1, db ;   rho_a(j,k) = rho_a(j,k) + rho((j-1)*db+l,(k-1)*db+l) ;   enddo
+enddo ; enddo
 
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
@@ -170,14 +174,14 @@ end
 !-----------------------------------------------------------------------------------------------------------------------------------
 subroutine partial_trace_a_he(rho, da, db, rho_b)  ! Returns the left partial trace (over a), for a bi-partite matrix (the HERMITIAN case)
 implicit none
-integer :: da, db ! Dimensions of the subsystems (the dimension of the whole system is d = da*db)
-complex(8) :: rho(1:da*db,1:da*db)  ! Bipartite matrix (computational basis representation of the ragarded operator)
-complex(8) :: rho_b(1:db,1:db)  !  Reduced matrix
+integer, intent(in) :: da, db ! Dimensions of the subsystems (the dimension of the whole system is d = da*db)
+complex(8), intent(in) :: rho(1:da*db,1:da*db)  ! Bipartite matrix (computational basis representation of the ragarded operator)
+complex(8), intent(out) :: rho_b(1:db,1:db)  !  Reduced matrix
 integer :: j, k, l  ! Auxiliary variable for counters
 
 rho_b = 0.d0
 do j = 1, db ;   do k = j, db
-  do l = 1, da ;   rho_b(j,k) = rho_b(j,k) + rho((j-1)*da+l,(k-1)*da+l) ;   enddo
+  do l = 1, da ;   rho_b(j,k) = rho_b(j,k) + rho((l-1)*db+j,(l-1)*db+k) ;   enddo
   if ( j /= k ) rho_b(k,j) = conjg(rho_b(j,k))
 enddo ;   enddo
 
@@ -185,9 +189,9 @@ end
 !-----------------------------------------------------------------------------------------------------------------------------------
 subroutine partial_trace_b_he(rho, da, db, rho_a)  ! Returns the right partial trace (over b), for a bi-partite matrix (the HERMITIAN case)
 implicit none
-integer :: da, db ! Dimensions of the subsystems (the dimension of the whole system is d = da*db)
-complex(8) :: rho(1:da*db,1:da*db)  ! Bipartite matrix (computational basis representation of the ragarded operator)
-complex(8) :: rho_a(1:da,1:da)  !  Reduced matrix
+integer, intent(in) :: da, db ! Dimensions of the subsystems (the dimension of the whole system is d = da*db)
+complex(8), intent(in) :: rho(1:da*db,1:da*db)  ! Bipartite matrix (computational basis representation of the ragarded operator)
+complex(8), intent(out) :: rho_a(1:da,1:da)  !  Reduced matrix
 integer :: j, k, l  ! Auxiliary variables for counters
 
 rho_a = 0.d0
@@ -200,13 +204,13 @@ end
 !-----------------------------------------------------------------------------------------------------------------------------------
 subroutine partial_trace_3_he(rho, da, db, dc, rho_ac)  ! Returns the inner partial trace for a three-partite matrix (for the HERMITIAN case)
 implicit none
-integer :: da, db, dc  ! Dimension of the three sub-systems (the dimension of the whole system is d = da*db*dc)
-complex(8) :: rho(1:da*db*dc,1:da*db*dc)  ! Three-partite matrix (computational basis representation of the ragarded operator)
-complex(8) :: rho_ac(1:da*dc,1:da*dc)  ! Bipartite reduced matrix
+integer, intent(in) :: da, db, dc  ! Dimension of the three sub-systems (the dimension of the whole system is d = da*db*dc)
+complex(8), intent(in) :: rho(1:da*db*dc,1:da*db*dc)  ! Three-partite matrix (computational basis representation of the ragarded operator)
+complex(8), intent(out) :: rho_ac(1:da*dc,1:da*dc)  ! Bipartite reduced matrix
 integer :: j, k, l, m, o  ! Auxiliary variables for counters
 integer :: cj, ck, ccj, cck  ! Auxiliary variables for the dimensions
 
-rho_ac = (0.d0,0.d0)
+rho_ac = 0.d0
 doj: do j = 1, da ;   dol: do l = 1, dc ;   cj = (j-1)*dc+l ;   ccj = (j-1)*db*dc+l
 dom: do m = 1, da ;   doo: do o = 1, dc ;   ck = (m-1)*dc+o
   if ( cj > ck ) then ;   if ( o < dc ) then ;   cycle doo ;   else if ( o == dc ) then ;  cycle dom ;   endif ;   endif

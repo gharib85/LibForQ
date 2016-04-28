@@ -1,7 +1,7 @@
 !###################################################################################################################################
 !                                                 Some popular Quantum STATES
 !###################################################################################################################################
-subroutine bell_basis(psi_p, psi_m, phi_p, phi_m)  ! Defines the Bell basis states
+subroutine bell_basis(psi_p, psi_m, phi_p, phi_m)  ! Defines the BELL BASIS states
 implicit none
 complex(8) :: psi_p(4), psi_m(4), phi_p(4), phi_m(4) 
 
@@ -12,7 +12,7 @@ phi_m(1) = 1.d0/sqrt(2.d0) ;  phi_m(2) = 0.d0 ;   phi_m(3) = 0.d0 ;   phi_m(4) =
 
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
-subroutine rho_bds(c1, c2, c3, rho)  ! Two-qubit Bell-diagonal state
+subroutine rho_bds(c1, c2, c3, rho)  ! Two-qubit Bell-diagonal state (BDS)
 implicit none
 real(8) :: c1, c2, c3  ! Components of the correlation vector
 complex(8) :: rho(1:4,1:4)  ! For the Bell-diagobal density matrix
@@ -33,7 +33,7 @@ deallocate( kp, sigma_0, sigma_1, sigma_2, sigma_3 )
 
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
-subroutine state_werner(da, x, rho)  ! Returns the Werner's state
+subroutine state_werner(da, x, rho)  ! Returns the WERNER's state
 ! Ref: S. J. Akhtarshenas, H. Mohammadi, S. Karimi, and Z. Azmi, Computable measure of quantum correlation, QIP 14, 247 (2015).
 implicit none
 integer :: da ! Dimension of sub-system a (db = da and d = da*db = da^2)
@@ -56,7 +56,7 @@ enddo ;   enddo
 
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
-subroutine state_isotropic(da, x, rho)  ! Returns the Isotropic state
+subroutine state_isotropic(da, x, rho)  ! Returns the ISOTROPIC state
 ! Ref: S. J. Akhtarshenas, H. Mohammadi, S. Karimi, and Z. Azmi, Computable measure of quantum correlation, QIP 14, 247 (2015).
 implicit none
 integer :: da ! Dimension of sub-system a (db = da and d = da*db = da^2)

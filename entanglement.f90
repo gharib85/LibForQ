@@ -98,7 +98,6 @@ implicit none
 character(1) :: ssys  ! Determines in which sub-system the transposition is to be applied (subsys = 'a' or 'b')
 integer :: da, db ! Dimensions of the subsystems
 complex(8) :: rho(1:da*db,1:da*db), rho_pt(1:da*db,1:da*db)  ! Bipartite original and partial transposed states
-!real(8) :: neg ! Negativity
 real(8) :: norm_tr  ! For the trace norm function
 real(8) :: log2  ! For the log base two
 
