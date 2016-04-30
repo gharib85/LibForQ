@@ -1,6 +1,6 @@
-I would like to thank everyone that in some way helped or motivated me to improve this code.
+I would like to thank everyone that in some way helped me or motivated me to improve this code.
 In particular, I thank:
 
 - CARLOS ALBERTO VAZ DE MORAIS JUNIOR, for tips regarding the creation of Fortran Libraries.
-- FELIX HUBER, for pointing out an error in one of the partial traces subroutines and for several 
+- FELIX HUBER, for pointing out an error in one of the partial traces subroutines and for 
                helpful suggestions and questions.

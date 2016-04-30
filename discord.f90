@@ -45,7 +45,7 @@ MI_bds = l00*log2(4.d0*l00) + l01*log2(4.d0*l01) + l10*log2(4.d0*l10) + l11*log2
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
 real(8) function discord_tr_xs(ssys, rho)  ! Returns the TRACE DISTANCE discord for 2-qubits X states
-! Ref: F. Ciccarello, T. Tufarelli, and V. Giovannetti, Toward computability of trace distance discord, NJP 16, 013038 (2014).
+! Ref: F. Ciccarello et al., Toward computability of trace distance discord, NJP 16, 013038 (2014).
 implicit none
 complex(8) :: rho(1:4,1:4)  ! The X density matrix
 real(8) :: c11, c22, c33, a3, b3  ! For the nonzero correlation matrix and Bloch vector elements
@@ -69,8 +69,7 @@ endif
 end
 !---------------------------------
 real(8) function ccorr_tr_xs(rho)  ! Returns the trace distance classical correlation for 2-qubit X states
-! Ref: P. C. Obando, F. M. Paula, and M. S. Sarandy, Trace-distance correlations for X states and emergence of the pointer basis 
-!      in Markovian and non-Markovian regimes, PRA 92, 032307 (2015).
+! Ref: P. C. Obando et al., PRA 92, 032307 (2015).
 implicit none
 complex(8) :: rho(1:4,1:4)  ! The density matrix
 real(8) :: c11, c22, c33, a3, b3  ! For the nonzero correlation matrix and Bloch vector elements
@@ -84,8 +83,7 @@ real(8) :: c11, c22, c33, a3, b3  ! For the nonzero correlation matrix and Bloch
 end
 !---------------------------------
 real(8) function tcorr_tr_xs(rho)  ! Returns the total correlation for 2-qubit X states
-! Ref: P. C. Obando, F. M. Paula, and M. S. Sarandy, Trace-distance correlations for X states and emergence of the pointer basis 
-!      in Markovian and non-Markovian regimes, PRA 92, 032307 (2015).
+! Ref: P. C. Obando et al., PRA 92, 032307 (2015).
 implicit none
 complex(8) :: rho(1:4,1:4)  ! The density matrix
 real(8) :: c11, c22, c33, a3, b3  ! For the nonzero correlation matrix and Bloch vector elements
@@ -153,7 +151,8 @@ if (ssys == 'a' ) then ! CQ states are 'classical'
   allocate( bv(1:dda) ) ;   call bloch_vector_gellmann(da, rho_a, bv) ;   deallocate( rho_a )  ! Computes the Bloch vector
   allocate( proj_bv(1:dda,1:dda) ) ;   call projector_re(bv, dda, proj_bv) ;   deallocate( bv )  
   allocate( corrmat(1:dda,1:ddb) ) ;   call corrmat_gellmann(da, db, rho, corrmat)  ! Computes the correlation matrix
-  allocate( Xi(1:dda,1:dda) ) ;   Xi = (2.d0/dble(da*da*db))*( proj_bv + (2.d0/dble(db))*matmul(corrmat,transpose(corrmat)) ) ! A-correlation matrix
+  ! A-correlation matrix
+  allocate( Xi(1:dda,1:dda) ) ;   Xi = (2.d0/dble(da*da*db))*( proj_bv + (2.d0/dble(db))*matmul(corrmat,transpose(corrmat)) )
   deallocate( proj_bv, corrmat )
   allocate( W(1:dda) ) ;   call lapack_dsyevd('N', dda, Xi, W) ;   deallocate( Xi )
   discord_hs = sum(W(1:(da*(da-1)))) ;   deallocate( W )  ! for the ameliorated 2-norm discord
@@ -162,7 +161,8 @@ else if ( ssys == 'b' ) then  ! QC states are 'classical'
   allocate( bv(1:ddb) ) ;   call bloch_vector_gellmann(db, rho_b, bv) ;   deallocate( rho_b )  ! Computes the Bloch vector
   allocate( proj_bv(1:ddb,1:ddb) ) ;   call projector_re(bv, ddb, proj_bv) ;   deallocate( bv ) 
   allocate( corrmat(1:dda,1:ddb) ) ;   call corrmat_gellmann(da, db, rho, corrmat)  ! Computes the correlation matrix
-  allocate( Xi(1:ddb,1:ddb) ) ;   Xi = (2.d0/dble(da*db*db))*( proj_bv + (2.d0/dble(da))*matmul(transpose(corrmat),corrmat) ) ! B-correlation matrix
+  ! B-correlation matrix
+  allocate( Xi(1:ddb,1:ddb) ) ;   Xi = (2.d0/dble(da*db*db))*( proj_bv + (2.d0/dble(da))*matmul(transpose(corrmat),corrmat) ) 
   deallocate( proj_bv, corrmat )
   allocate( W(1:ddb) ) ;   call lapack_dsyevd('N', ddb, Xi, W) ;   deallocate( Xi )
   discord_hs = sum(W(1:(db*(db-1)))) ;   deallocate( W )  ! for the ameliorated 2-norm discord
@@ -171,7 +171,7 @@ endif
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
 real(8) function discord_hsa(ssys, da, db, rho)  ! Returns the AMENDED HILBERT-SCHMIDT discord 
-! Ref: S. J. Akhtarshenas, H. Mohammadi, S. Karimi, and Z. Azmi, Computable measure of quantum correlation, QIP 14, 247 (2015).
+! Ref: S. J. Akhtarshenas et al., Computable measure of quantum correlation, QIP 14, 247 (2015).
 implicit none
 character(1), intent(in) :: ssys  ! Tells if sub-system a or b is classical one, in the minimization
 integer, intent(in) :: da, db  ! Dimension of the subsystems
@@ -192,17 +192,20 @@ if (ssys == 'a' ) then ! CQ states are 'classical'
   allocate( bv(1:dda) ) ;   call bloch_vector_gellmann(da, rho_a, bv) ;   deallocate( rho_a )  ! Computes the Bloch vector
   allocate( proj_bv(1:dda,1:dda) ) ;   call projector_re(bv, dda, proj_bv) ;   deallocate( bv )  
   allocate( corrmat(1:dda,1:ddb) ) ;   call corrmat_gellmann(da, db, rho, corrmat)  ! Computes the correlation matrix
-  allocate( Xi(1:dda,1:dda) ) ;   Xi = (2.d0/dble(da*da*db))*( proj_bv + (2.d0/dble(db))*matmul(corrmat,transpose(corrmat)) ) ! A-correlation matrix
+  ! A-correlation matrix
+  allocate( Xi(1:dda,1:dda) ) ;   Xi = (2.d0/dble(da*da*db))*( proj_bv + (2.d0/dble(db))*matmul(corrmat,transpose(corrmat)) )
   deallocate( proj_bv, corrmat )
   allocate( W(1:dda) ) ;   call lapack_dsyevd('N', dda, Xi, W) ;   deallocate( Xi )
   allocate( rho_b(1:db,1:db) ) ;   call partial_trace_a_he(rho, da, db, rho_b)
   discord_hsa = (1.d0/purity(db, rho_b))*sum(W(1:(da*(da-1)))) ;   deallocate( W, rho_b )  ! for the ameliorated 2-norm discord
+  
 else if ( ssys == 'b' ) then  ! QC states are 'classical'
   allocate( rho_b(1:db,1:db) ) ;   call partial_trace_a_he(rho, da, db, rho_b)
   allocate( bv(1:ddb) ) ;   call bloch_vector_gellmann(db, rho_b, bv) ;   deallocate( rho_b )  ! Computes the Bloch vector
   allocate( proj_bv(1:ddb,1:ddb) ) ;   call projector_re(bv, ddb, proj_bv) ;   deallocate( bv ) 
   allocate( corrmat(1:dda,1:ddb) ) ;   call corrmat_gellmann(da, db, rho, corrmat)  ! Computes the correlation matrix
-  allocate( Xi(1:ddb,1:ddb) ) ;   Xi = (2.d0/dble(da*db*db))*( proj_bv + (2.d0/dble(da))*matmul(transpose(corrmat),corrmat) ) ! B-correlation matrix
+  ! B-correlation matrix
+  allocate( Xi(1:ddb,1:ddb) ) ;   Xi = (2.d0/dble(da*db*db))*( proj_bv + (2.d0/dble(da))*matmul(transpose(corrmat),corrmat) ) 
   deallocate( proj_bv, corrmat )
   allocate( W(1:ddb) ) ;   call lapack_dsyevd('N', ddb, Xi, W) ;   deallocate( Xi )
   allocate( rho_a(1:da,1:da) ) ;   call partial_trace_b_he(rho, da, db, rho_a)
