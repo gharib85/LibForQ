@@ -38,7 +38,12 @@ $ gfortran -lblas -llapack -lforq main.f90
 REMARK: As seen above, this library depends on BLAS and Lapack. If you need random objects, see LibForro.
 
 Related references:
-- J. Maziero, Random sampling of quantum states: A survey of methods, Braz. J. Phys. 45, 575 (2015), [arXiv:1502.03644].
-- J. Maziero, Generating pseudo-random discrete probability distributions, Braz. J. Phys. 45, 377 (2015), [arXiv:1502.02128].
+- J. Maziero, Random sampling of quantum states: A survey of methods, 
+  Braz. J. Phys. 45, 575 (2015), [arXiv:1502.03644].
+- J. Maziero, Generating pseudo-random discrete probability distributions, 
+  Braz. J. Phys. 45, 377 (2015), [arXiv:1502.02128].
 - J. Maziero, Fortran code for generating random probability vectors, unitaries, and quantum states,
   Frontiers in ICT 3, 4 (2016).
+- J. Maziero, Computing partial traces and reduced density matrices, [arXiv:1601.07458].
+- J. Maziero, Computing coherence vectors and correlation matrices, with application to quantum discord quantification, 
+  [arXiv:1603.05284].

@@ -1,7 +1,7 @@
 !###################################################################################################################################
 !                                                     LAPACK callers
 !###################################################################################################################################
-subroutine lapack_zgeev(JOBVR, N, A, Wc)  ! Calls LAPACK's eigensolver for general complex matrices
+subroutine lapack_zgeev(JOBVR, N, A, Wc)  ! Calls LAPACK's eigensolver for GENERAL complex matrices
 ! ZGEEV computes all eigenvalues and, optionally, eigenvectors of a complex Hermitian matrix A.  If eigenvectors are desired, it uses a
 ! divide and conquer algorithm. The divide and conquer algorithm makes very mild assumptions about floating point arithmetic. It will 
 ! work on machines with a guard digit in add/subtract, or on those binary machines without guard digits which subtract like the Cray 
@@ -38,7 +38,7 @@ integer :: INFO   ! INFO is INTEGER
     
 end
 !------------------------------------------------------------------------------------------------------------------------------------
-subroutine lapack_zheevd(JOBZ, N, A, W)  ! Calls LAPACK's eigensolver for Hermitian complex matrices
+subroutine lapack_zheevd(JOBZ, N, A, W)  ! Calls LAPACK's eigensolver for HERMITIAN complex matrices
 ! ZHEEVD computes all eigenvalues and, optionally, eigenvectors of a complex Hermitian matrix A.  If eigenvectors are desired, it uses a
 ! divide and conquer algorithm. The divide and conquer algorithm makes very mild assumptions about floating point arithmetic. It will 
 ! work on machines with a guard digit in add/subtract, or on those binary machines without guard digits which subtract like the Cray 
@@ -113,7 +113,7 @@ deallocate( WORK, RWORK, IWORK )
   
 end
 !------------------------------------------------------------------------------------------------------------------------------------
-subroutine lapack_dsyevd(JOBZ, N, A, W)  ! Calls LAPACK's eigensolver for symmetric real matrices
+subroutine lapack_dsyevd(JOBZ, N, A, W)  ! Calls LAPACK's eigensolver for SYMMETRIC real matrices
 ! DSYEVD computes all eigenvalues and, optionally, eigenvectors of a
 ! real symmetric matrix A. If eigenvectors are desired, it uses a
 ! divide and conquer algorithm.!

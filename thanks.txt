@@ -3,4 +3,5 @@ In particular, I thank:
 
 - CARLOS ALBERTO VAZ DE MORAIS JUNIOR, for tips regarding the creation of Fortran Libraries.
 - FELIX HUBER, for pointing out an error in one of the partial traces subroutines and for 
-               helpful suggestions and questions.
+               helpful suggestions and questions, and also for implementing the Python Wrappers
+               of some of the subroutines provided in LibForQ.

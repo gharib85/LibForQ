@@ -33,7 +33,7 @@ deallocate( kp, sigma_0, sigma_1, sigma_2, sigma_3 )
 
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
-subroutine state_werner(da, x, rho)  ! Returns the WERNER's state
+subroutine state_werner(da, x, rho)  ! Returns the WERNER's state, as written in the reference below:
 ! Ref: S. J. Akhtarshenas, H. Mohammadi, S. Karimi, and Z. Azmi, Computable measure of quantum correlation, QIP 14, 247 (2015).
 implicit none
 integer :: da ! Dimension of sub-system a (db = da and d = da*db = da^2)
@@ -105,4 +105,23 @@ x = 1.d0/sqrt(dble(nqb)) ;   W = 0.d0 ;   W(2) = x ;   W(2**(nqb-1)+1) = x
 if ( nqb > 2 ) then ;   do j = nqb-1, 2, -1 ;   W(2**(nqb-j)+1) = x ;   enddo ;   endif
 
 end
+!------------------------------------------------------------------------------------------------------------------------------------
+subroutine state_thermal(kBT, H, d, rhoT)  ! Returns the Gibbs THERMAL state 
+implicit none
+integer :: d  ! Dimension
+complex(8) :: H(1:d,1:d), rhoT(1:d,1:d)  ! For the Hamiltonian and the associated thermal state
+complex(8), allocatable :: A(:,:), proj(:,:) ! Auxiliary matrices
+real(8), allocatable :: W(:)  ! For the Hamiltonian eigenvalues
+real(8) :: kBT  ! For the temperature, multiplied by the Boltzmann constant
+real(8) :: ZZ  ! For the partition function
+integer :: j, k  ! Auxiliary variables for counters
+
+allocate(A(1:d,1:d), proj(1:d,1:d), W(1:d))
+if ( kBT < 1.d-15) kBT = 1.d-15 ;   A = H ;   call lapack_zheevd('V', d, A, W)                            
+forall(j = 1:d) W(j) = W(j) - W(1) ! Changes the energy scale: E >= 0
+ZZ = 0.d0 ;   do j = 1, d ;   ZZ = ZZ + dexp(-W(j)/kBT) ;   enddo ;   if ( ZZ < 1.d-15) kBT = 1.d-15 
+rhoT = 0.d0 ;   do j = 1, d ;   call projector(A(:,j), d, proj) ;  rhoT = rhoT + (exp(-W(j)/kBT)/ZZ)*proj ;   enddo
+deallocate(A, proj, W)
+
+end 
 !###################################################################################################################################

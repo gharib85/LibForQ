@@ -17,6 +17,7 @@ call stokes_parameters_2qb(rho, ma, mb, corr) ;   mK = matmul(transpose(corr),co
 
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
+! needs more tests
 real(8) function min_hs(ssys, da, db, rho)  ! Returns the MEASUREMENT-INDUCED NONLOCALITY (with Hilbert-Schmidt distance)
 ! Refs: Phys. Rev. Lett. 106, 120401 (2011)
 implicit none

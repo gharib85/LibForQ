@@ -44,7 +44,7 @@ MI_bds = l00*log2(4.d0*l00) + l01*log2(4.d0*l01) + l10*log2(4.d0*l10) + l11*log2
 
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
-real(8) function discord_tr_xs(ssys, rho)  ! Returns the TRACE DISTANCE discord for 2-qubits X states
+real(8) function discord_tr_xs(ssys, rho)  ! Returns the TRACE DISTANCE discord for 2-qubit X states
 ! Ref: F. Ciccarello et al., Toward computability of trace distance discord, NJP 16, 013038 (2014).
 implicit none
 complex(8) :: rho(1:4,1:4)  ! The X density matrix
@@ -214,6 +214,7 @@ endif
 
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
+! needs more tests
 real(8) function discord_mid(da, db, rho)  ! Returns the MEASUREMENT-INDUCED DISTURBANCE
 ! Ref: S. Luo, Using measurement-induced disturbance to characterize correlations as classical or quantum, PRA 77, 022301 (2008)
 implicit none
@@ -253,6 +254,7 @@ discord_mid = mi_rho - mi_rhom
 
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
+! needs more tests
 real(8) function discord_easy(ssys, da, db, rho)  ! Returns the expression for the EASY discord 
 ! Ref: H. Cao, Z.-Q. Wu, L.-Y. Hu, X.-X. Xu, and J.-H. Huang, An easy measure of quantum correlation, QIP 14, 4103 (2015).
 ! REMARK. Not tested yet

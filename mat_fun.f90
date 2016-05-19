@@ -122,7 +122,7 @@ do i = 1, n - 1
     else if (ord_pm(i) == 2) then ;   M1 = sigma_2 ;   else if (ord_pm(i) == 3) then ;   M1 = sigma_3
          end if
   end if
-  allocate(M1_kp_M2(1:d1*d2,1:d1*d2)) ;   call kronecker_product_C(M1, d1, d1, M2, d2, d2, M1_kp_M2)  
+  allocate(M1_kp_M2(1:d1*d2,1:d1*d2)) ;   call kronecker_product_c(M1, d1, d1, M2, d2, d2, M1_kp_M2)  
   deallocate(M1) ;   allocate(M1(1:d1*d2,1:d1*d2)) ;   M1 = M1_kp_M2 ;   deallocate(M1_kp_M2)
 end do
 
@@ -165,7 +165,7 @@ complex(8) :: M1(1:nr1,1:nc1), M2(1:nr2,1:nc2)  ! Matrices to take the tensor pr
 complex(8) :: M1_kp_M2(1:nr1*nr2,1:nc1*nc2)  ! Matrix containing the tensor product of M1 and M2
 integer :: i, j  ! Auxiliary variables for counters
 
-M1_kp_M2 = (0.d0,0.d0) ;   forall ( i = 1:nr1 , j = 1:nc1 ) M1_kp_M2(nr2*(i-1)+1 : nr2*i , nc2*(j-1)+1 : nc2*j)  =  M1(i,j)*M2
+M1_kp_M2 = 0.d0 ;   forall ( i = 1:nr1 , j = 1:nc1 ) M1_kp_M2(nr2*(i-1)+1 : nr2*i , nc2*(j-1)+1 : nc2*j)  =  M1(i,j)*M2
 
 end
 !------------------------------------------------------------------------------------------------------------------------------------
