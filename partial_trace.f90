@@ -1,6 +1,6 @@
 !###################################################################################################################################
 ! The next four subroutines are used, and needed, for computing the partial trace for general multi-partite systems 
-! (for the HERMITIAN case)
+! (for HERMITIAN matrices), (OPTMIZED version)
 !###################################################################################################################################
 subroutine partial_trace_he(rho, d, di, nss, ssys, dr, rhor)  ! Returns the partial trace for general multipartite systems
 implicit none
@@ -112,7 +112,7 @@ enddo doo ;   enddo dom ;   enddo dol ;   enddo doj
 end
 !###################################################################################################################################
 ! The next four subroutines are used, and needed, for computing the partial trace for general multi-partite systems
-! (for the GENERAL case)
+! (for GENERAL matroices), (OPTMIZED version)
 !###################################################################################################################################
 subroutine partial_trace(rho, d, di, nss, ssys, dr, rhor)  ! Returns the partial trace for general multipartite systems
 implicit none
@@ -218,7 +218,7 @@ enddo ;   enddo ;   enddo ;   enddo
 
 end
 !###################################################################################################################################
-!                            Direct, UNOPTIMIZED, implementation from the partial trace definition
+! Direct (UNOPTIMIZED) implementation from the partial trace definition
 !###################################################################################################################################
 subroutine ptr(rho, d, di, nss, ssys, dr, rhor)  ! Returns the partial trace for general multipartite systems
 implicit none
