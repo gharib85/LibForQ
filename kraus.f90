@@ -2,6 +2,7 @@
 !                                   TWO-QUBIT evolved states for some quantum channels
 !###################################################################################################################################
 subroutine rho_ad(p, rho, rhop)  ! Returns the two-qubit evolved state for local AMPLITUDE DAMPING channels
+! Ref: M. B. Pozzobom and J. Maziero, "Environment-induced quantum coherence spreading",  [arXiv:1605.04746].
 implicit none
 real(8) :: p  ! Parametrized time
 complex(8) :: rho(1:4,1:4), rhop(1:4,1:4)  ! Initial and evolved states
@@ -23,6 +24,7 @@ rhop = rhop + matmul(matmul(kp1,rho),kp2)
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
 subroutine rho_pd(p, rho, rhop)  ! Returns the two-qubit evolved state for local PHASE DAMPING channels
+! Ref: M. B. Pozzobom and J. Maziero, "Environment-induced quantum coherence spreading",  [arXiv:1605.04746].
 implicit none
 real(8) :: p  ! Parametrized time
 complex(8) :: rho(1:4,1:4), rhop(1:4,1:4)  ! Initial and evolved states
@@ -47,6 +49,7 @@ call kronecker_product_c(K2, 2, 2, K2, 2, 2, kp) ;   rhop = rhop + matmul(matmul
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
 subroutine rho_bf(p, rho, rhop)  ! Returns the two-qubit evolved state for local BIT FLIP channels
+! Ref: M. B. Pozzobom and J. Maziero, "Environment-induced quantum coherence spreading",  [arXiv:1605.04746].
 implicit none
 real(8) :: p  ! Parametrized time
 complex(8) :: rho(1:4,1:4), rhop(1:4,1:4)  ! Initial and evolved states
@@ -65,6 +68,7 @@ call kronecker_product_c(K1, 2, 2, K1, 2, 2, kp) ;   rhop = rhop + matmul(matmul
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
 subroutine rho_pf(p, rho, rhop)  ! Returns the two-qubit evolved state for local PHASE FLIP channels
+! Ref: M. B. Pozzobom and J. Maziero, "Environment-induced quantum coherence spreading",  [arXiv:1605.04746].
 implicit none
 real(8) :: p  ! Parametrized time
 complex(8) :: rho(1:4,1:4), rhop(1:4,1:4)  ! Initial and evolved states
@@ -83,6 +87,7 @@ call kronecker_product_c(K1, 2, 2, K1, 2, 2, kp) ;   rhop = rhop + matmul(matmul
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
 subroutine rho_bpf(p, rho, rhop)  ! Returns the two-qubit evolved state for local BIT-PHASE FLIP channels
+! Ref: M. B. Pozzobom and J. Maziero, "Environment-induced quantum coherence spreading",  [arXiv:1605.04746].
 implicit none
 real(8) :: p  ! Parametrized time
 complex(8) :: rho(1:4,1:4), rhop(1:4,1:4)  ! Initial and evolved states
@@ -101,6 +106,7 @@ call kronecker_product_c(K1, 2, 2, K1, 2, 2, kp) ;   rhop = rhop + matmul(matmul
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
 subroutine rho_d(p, rho, rhop)  ! Returns the two-qubit evolved state for local DEPOLARIZING channels
+! Ref: M. B. Pozzobom and J. Maziero, "Environment-induced quantum coherence spreading",  [arXiv:1605.04746].
 implicit none
 real(8) :: p  ! Parametrized time
 complex(8) :: rho(1:4,1:4), rhop(1:4,1:4)  ! Initial and evolved states
