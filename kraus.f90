@@ -1,7 +1,7 @@
 !###################################################################################################################################
 !                                   TWO-QUBIT evolved states for some quantum channels
 !###################################################################################################################################
-subroutine rho_ad(p, rho, rhop)  ! Returns the two-qubit evolved state for local AMPLITUDE DAMPING channels
+subroutine rho_ad(p, rho, rhop)  ! Returns the two-qubit evolved state for LOCAL AMPLITUDE DAMPING channels
 ! Ref: M. B. Pozzobom and J. Maziero, "Environment-induced quantum coherence spreading",  [arXiv:1605.04746].
 implicit none
 real(8) :: p  ! Parametrized time

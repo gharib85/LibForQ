@@ -218,7 +218,7 @@ enddo ;   enddo ;   enddo ;   enddo
 
 end
 !###################################################################################################################################
-! Direct (UNOPTIMIZED) implementation from the partial trace definition
+! (UNOPTIMIZED) Implementation of the partial trace directly from its definition
 !###################################################################################################################################
 subroutine ptr(rho, d, di, nss, ssys, dr, rhor)  ! Returns the partial trace for general multipartite systems
 implicit none

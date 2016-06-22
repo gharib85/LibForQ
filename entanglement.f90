@@ -21,7 +21,7 @@ endif
 
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
-subroutine schmidt_coefficients(psi, d, da, db, schcoeff, eigvec_a, eigvec_b)  ! Returns the Schmidt coefficients for a bipartite pure state
+subroutine schmidt_coefficients(psi, d, da, db, schcoeff, eigvec_a, eigvec_b)  ! Returns the Schmidt coeff. for a bipartite pure state
 ! The matrix evecs has dimension ds x ds and contains in its columns the eigenvectors of rho_s
 integer :: d, da, db  ! Dimension of whole state space and of the marginal spaces
 complex(8) :: psi(1:d)  ! The bipartite state vector
@@ -74,40 +74,61 @@ pv(1) = (1.d0 + sqrt(1.d0 - concurrence_2qb(rho)**2.d0))/2.d0 ;   pv(2) = 1.d0 -
 
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
-real(8) function negativity(da, db, ssys, rho)  ! Returns the entanglement negativity of a bipartite systems
+real(8) function negativity(d, rho_pt)  ! Returns the entanglement negativity of a "bipartite" system
+! This is an simplified version of the subroutine below. Here only the partial transposed matrix is given as input.
 ! Ref: G. Vidal and R.F. Werner, A computable measure of entanglement, Phys. Rev. A 65, 032314 (2002).
 implicit none
-character(1) :: ssys  ! Determines in which sub-system the transposition is to be applied (subsys = 'a' or 'b')
-integer :: da, db ! Dimensions of the subsystems
-complex(8) :: rho(1:da*db,1:da*db), rho_pt(1:da*db,1:da*db)  ! Bipartite original and partial transposed states
+integer :: d ! Dimension of the state space
+complex(8) :: rho_pt(1:d,1:d)  ! Partial transposed of a state
 real(8) :: norm_tr  ! For the trace norm function
 
-if (ssys == 'a') then
-  call partial_transpose_a(da, db, rho, rho_pt)
-else if (ssys == 'b') then
-  call partial_transpose_b(da, db, rho, rho_pt)
-endif
-
-negativity = 0.5d0*(norm_tr(da*db, rho_pt) - 1.d0)
+negativity = 0.5d0*(norm_tr(d, rho_pt) - 1.d0)  ! It's equal to the sum of the negative eigenvalues of rho_pt
      
+!--------------------------------------------------
+!real(8) function negativity(da, db, ssys, rho)  ! Returns the entanglement negativity of a bipartite system
+! Ref: G. Vidal and R.F. Werner, A computable measure of entanglement, Phys. Rev. A 65, 032314 (2002).
+!implicit none
+!character(1) :: ssys  ! Determines in which sub-system the transposition is to be applied (subsys = 'a' or 'b')
+!integer :: da, db ! Dimensions of the subsystems
+!complex(8) :: rho(1:da*db,1:da*db), rho_pt(1:da*db,1:da*db)  ! Bipartite original and partial transposed states
+!real(8) :: norm_tr  ! For the trace norm function
+!if (ssys == 'a') then
+!  call partial_transpose_a(da, db, rho, rho_pt)
+!else if (ssys == 'b') then
+!  call partial_transpose_b(da, db, rho, rho_pt)
+!endif
+!negativity = 0.5d0*(norm_tr(da*db, rho_pt) - 1.d0)  
+!end
+!--------------------------------------------------
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
-real(8) function log_negativity(da, db, ssys, rho)  ! Returns the entanglement logaritmic negativity of a bipartite systems
+real(8) function log_negativity(d, rho_pt)  ! Returns the entanglement logaritmic negativity of a "bipartite" system
+! This is an simplified version of the code below. Here only the partial transposed matrix is given as input.
 ! Ref: G. Vidal and R.F. Werner, A computable measure of entanglement, Phys. Rev. A 65, 032314 (2002).
 implicit none
-character(1) :: ssys  ! Determines in which sub-system the transposition is to be applied (subsys = 'a' or 'b')
-integer :: da, db ! Dimensions of the subsystems
-complex(8) :: rho(1:da*db,1:da*db), rho_pt(1:da*db,1:da*db)  ! Bipartite original and partial transposed states
+integer :: d ! Dimension of the state space
+complex(8) :: rho_pt(1:d,1:d)  ! Partial transposed of a state
 real(8) :: norm_tr  ! For the trace norm function
 real(8) :: log2  ! For the log base two
 
-if (ssys == 'a') then
-  call partial_transpose_a(da, db, rho, rho_pt)
-else if (ssys == 'b') then
-  call partial_transpose_b(da, db, rho, rho_pt)
-endif
-
-log_negativity = log2( norm_tr(da*db, rho_pt) )
+log_negativity = log2( norm_tr(d, rho_pt) )
      
+!--------------------------------------------------
+!real(8) function log_negativity(da, db, ssys, rho)  ! Returns the entanglement logaritmic negativity of a bipartite system
+! Ref: G. Vidal and R.F. Werner, A computable measure of entanglement, Phys. Rev. A 65, 032314 (2002).
+!implicit none
+!character(1) :: ssys  ! Determines in which sub-system the transposition is to be applied (subsys = 'a' or 'b')
+!integer :: da, db ! Dimensions of the subsystems
+!complex(8) :: rho(1:da*db,1:da*db), rho_pt(1:da*db,1:da*db)  ! Bipartite original and partial transposed states
+!real(8) :: norm_tr  ! For the trace norm function
+!real(8) :: log2  ! For the log base two
+!if (ssys == 'a') then
+!  call partial_transpose_a(da, db, rho, rho_pt)
+!else if (ssys == 'b') then
+!  call partial_transpose_b(da, db, rho, rho_pt)
+!endif
+!log_negativity = log2( norm_tr(da*db, rho_pt) )
+!end
+!--------------------------------------------------
 end
 !###################################################################################################################################
