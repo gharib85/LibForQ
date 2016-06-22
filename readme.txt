@@ -9,7 +9,7 @@ needs when working in quantum information science. Among the functionalities alr
   > Norms, inner products, and distance and distinguishability measures;
   > Purity, entropies, information measures, and mutual information;
   > Some popular, and not so popular, quantum states;
-  > Array display, Ginibre and identity matrices, adjoint, Kronecker product (KP), KP of n elements of the PG,
+  > Array display, identity matrix, adjoint, Kronecker product (KP), KP of n elements of the PG,
     Gram-Schmidt orthogonalization, projector, outer product, etc.
 I think it is better to take a look at the code and see all functions included. The variables used and needed are 
 explained there.
@@ -19,8 +19,7 @@ $ gfortran -lblas -llapack *.f90
 To run the executable file a.out generated just use:
 $ ./a.out
 
-Another, perhaps more convenient, manner of using the code is by creating a library. 
-For that purpose you may follow the simple steps below:
+Another, perhaps more convenient, manner of using the code is by creating a library. For that purpose you may follow the simple steps below:
 1) Download the code
 2) Go to the associated folder
 3) Create a library with the commands:
@@ -34,16 +33,11 @@ $ sudo cp libforq.a /usr/local/lib
 and use it, anywhere in your computer, via
 $ gfortran -lblas -llapack -lforq main.f90
 
-
-REMARK: As seen above, this library depends on BLAS and Lapack. If you need random objects, see LibForro.
+REMARK: As seen above, this library depends on BLAS and Lapack. If you need random objects, see https://github.com/jonasmaziero/LibForro.
 
 Related references:
-- J. Maziero, Random sampling of quantum states: A survey of methods, 
-  Braz. J. Phys. 45, 575 (2015), [arXiv:1502.03644].
-- J. Maziero, Generating pseudo-random discrete probability distributions, 
-  Braz. J. Phys. 45, 377 (2015), [arXiv:1502.02128].
-- J. Maziero, Fortran code for generating random probability vectors, unitaries, and quantum states,
-  Frontiers in ICT 3, 4 (2016).
+- J. Maziero, Random sampling of quantum states: A survey of methods, Braz. J. Phys. 45, 575 (2015), [arXiv:1502.03644].
+- J. Maziero, Generating pseudo-random discrete probability distributions,  Braz. J. Phys. 45, 377 (2015), [arXiv:1502.02128].
+- J. Maziero, Fortran code for generating random probability vectors, unitaries, and quantum states, Frontiers in ICT 3, 4 (2016).
 - J. Maziero, Computing partial traces and reduced density matrices, [arXiv:1601.07458].
-- J. Maziero, Computing coherence vectors and correlation matrices, with application to quantum discord quantification, 
-  [arXiv:1603.05284].
+- J. Maziero, Computing coherence vectors and correlation matrices, with application to quantum discord quantification, [arXiv:1603.05284].
