@@ -110,8 +110,10 @@ integer :: d ! Dimension of the state space
 complex(8) :: rho_pt(1:d,1:d)  ! Partial transposed of a state
 real(8) :: norm_tr  ! For the trace norm function
 real(8) :: log2  ! For the log base two
+real(8) :: negativity  ! For the negativity of entanglement
 
-log_negativity = log2( norm_tr(d, rho_pt) )
+!log_negativity = log2(2.d0*negativity(d, rho_pt)+1.d0)
+log_negativity = log2( norm_tr(d, rho_pt) )  
      
 !--------------------------------------------------
 !real(8) function log_negativity(da, db, ssys, rho)  ! Returns the entanglement logaritmic negativity of a bipartite system
@@ -130,5 +132,45 @@ log_negativity = log2( norm_tr(d, rho_pt) )
 !log_negativity = log2( norm_tr(da*db, rho_pt) )
 !end
 !--------------------------------------------------
+end
+!-----------------------------------------------------------------------------------------------------------------------------------
+subroutine entanglement_hs(d, rho_pt, Ehs, css)  ! Returns the Hilbert-Schmidt entanglement of two qudits
+! Ref: J. Maziero, Computing partial transposes and related entanglement measures, 
+implicit none
+integer :: d, dm, dp, dpp  ! For the dimensions (d is the whole system dimension)
+complex(8) :: rho_pt(1:d,1:d)  ! The partial transpose of the state under analysis (input). On exit, if css = 'y' and  
+                               ! Ehs > 0 then the closest separable state (CSS) is returned via this variable
+real(8) :: Ehs  ! For the Hilbert-Schmidt entanglement
+character(1) :: css  ! If css = 'y' the CSS is computed and returned in rho_pt, if css = 'n' and/or Ehs = 0 the CSS is not 
+                     ! computed and rho_pt is not modified
+complex(8), allocatable :: A(:,:)  ! Auxiliary variable for sending the PT to Lapack (it may returns the eigenvectors on exit)
+real(8), allocatable :: W(:), Wd(:)  ! For the eigenvalues of the PT, in ascending and descending order, respectively
+real(8) :: sw, sn1, sn2, sp1, sp2, xi  ! Auxiliary variable for the sums of eigenvalues and for xi
+integer :: j  ! Auxiliary variable for counters
+complex(8), allocatable :: proj(:,:)  ! Auxiliary variable for projectors
+                     
+allocate( A(1:d,1:d), W(1:d) ) ;   A = rho_pt  ! Computes the eigenvalues and eigenvectors of the PT
+if ( css == 'n' ) then ; call lapack_zheevd('N', d, A, W) ; else if ( css == 'y' ) then ; call lapack_zheevd('V', d, A, W) ; endif
+
+j = 0 ;   dm = 0 ;   do ;   j = j + 1 ;  if ( W(j) >= 0.d0 ) exit ;   dm = j ;   enddo  ! Computes d-
+
+if ( dm == 0 ) then  ! In this case Ehs is null
+  Ehs = 0.d0 
+else if ( dm > 0 ) then  ! Computes the auxiliary dimension and Ehs
+  sn1 = 0.d0 ;   sn2 = 0.d0 ;   do j = 1, dm ;   sn1 = sn1 + dabs(W(j)) ;   sn2 = sn2 + (W(j))**2.d0 ;   enddo
+  sp1 = 0.d0 ;   sp2 = 0.d0 ;  dp = d - dm ;   allocate( Wd(1:d) ) ;   forall ( j = 1:d ) Wd(j) = W(d-j+1)
+  sw = 0.d0 ;   j = 0 ;   do ;   j = j + 1 ;   sw = sw + Wd(j)   ;  if ( (sw > 1.d0) .or. (j >= dp) ) exit ; enddo ;   dpp = j
+  if ( dp > dpp ) then ;   do j = dpp+1 , dp ;   sp1 = sp1 + Wd(j) ;   sp2 = sp2 + (Wd(j))**2.d0 ;   enddo ;    endif
+  Ehs = dsqrt( (sn1 - sp1)**2.d0 + sp2 + sn2 ) 
+  if ( css == 'y' ) then  ! For computing the closest separable state
+    allocate( proj(1:d,1:d) ) ;   rho_pt = 0.d0 ;   xi = 0.d0
+    do j = 1, dpp-1 ;   call projector(A(:,d-j+1), d, proj) ;   rho_pt = rho_pt + Wd(j)*proj ;   xi = xi + Wd(j) ;   enddo
+    j = dpp ;   xi = 1.d0 - xi ;   call projector(A(:,d-j+1), d, proj) ;   rho_pt = rho_pt + xi*proj ;   deallocate( proj )
+  endif ;   deallocate( Wd ) 
+endif
+
+deallocate( A, W )
+
+
 end
 !###################################################################################################################################

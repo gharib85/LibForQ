@@ -1,5 +1,6 @@
 !###################################################################################################################################
 !                                                     PARTIAL TRANSPOSE
+! Ref: J. Maziero, Computing partial transposes and related entanglement measures, 
 !###################################################################################################################################
 subroutine partial_transpose(d, rho, rho_pt, nss, di, ssys)  ! Returns the partial transpose (PT) for general multipartite systems
 implicit none

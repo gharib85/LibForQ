@@ -44,6 +44,22 @@ MI_bds = l00*log2(4.d0*l00) + l01*log2(4.d0*l01) + l10*log2(4.d0*l10) + l11*log2
 
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
+real(8) function discord_re_bds(rho)  ! Returns the RELATIVE ENTROPY discord for 2-qubit Bell-diagonal states
+! Ref: K. Modi et al., Unified View of Quantum and Classical Correlations, PRL 104, 080501 (2010).
+implicit none
+complex(8) :: rho(1:4,1:4)  ! The density matrix
+real(8) :: q  ! Auxiliary variable
+complex(8) :: A(1:4,1:4)  ! Auxiliary variable for the density matrix
+real(8) :: W(1:4)  ! Auxiliary variable for eigenvalues
+real(8) :: pv(1:4)  ! Auxiliary variable for a probability vector
+real(8) :: shannon   ! For the Shannon entropy
+
+A = rho ;   call lapack_zheevd('N', 4, A, W)
+q = W(4) + W(3)  ;   pv(1) = q/2.d0 ;   pv(2) = pv(1) ;   pv(3) = (1.d0-q)/2.d0 ;   pv(4) = pv(3) 
+discord_re_bds = shannon(4, pv) - shannon(4, W)
+
+end
+!-----------------------------------------------------------------------------------------------------------------------------------
 real(8) function discord_tr_xs(ssys, rho)  ! Returns the TRACE DISTANCE discord for 2-qubit X states
 ! Ref: F. Ciccarello et al., Toward computability of trace distance discord, NJP 16, 013038 (2014).
 implicit none
@@ -102,7 +118,7 @@ real(8) :: kmax, kint, kmin  ! Auxiliary varibles
  
 end
 !----------------------------------------------------------------------------------------------------------------------------------
-real(8) function discord_hs_2qb(ssys, rho)  ! Returns the HILBERT-SCHMIDT discord for 2-qubits states
+real(8) function discord_hs_2qb(ssys, rho)  ! Returns the HILBERT-SCHMIDT discord for 2-qubit states
 ! Ref: B. Dakić, V. Vedral, Č. Brukner, Necessary and sufficient condition for nonzero quantum discord, PRL 105, 190502 (2010).
 implicit none
 character(1) :: ssys  ! Tells if sub-system a or b is classical (in the minimization)

@@ -5,7 +5,7 @@ subroutine math_cte(pi)  ! Mathematical constants of frequent use
 implicit none
 real(8) :: pi
 
-pi = 4.d0*atan(1.d0)
+pi = 4.d0*datan(1.d0)
 
 end
 !###################################################################################################################################
@@ -15,7 +15,7 @@ real(8) function log2(x)  ! Returns the base two log of x
 implicit none
 real(8):: x
 
-log2 = log(x)/log(2.d0)
+log2 = dlog(x)/dlog(2.d0)
 
 end
 !###################################################################################################################################

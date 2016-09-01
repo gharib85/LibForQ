@@ -1,6 +1,7 @@
 !###################################################################################################################################
 ! The next four subroutines are used, and needed, for computing the partial trace for general multi-partite systems 
 ! (for HERMITIAN matrices), (OPTMIZED version)
+! Ref. J. Maziero, Computing partial traces and reduced density matrices, Int. J. Mod. Phys. C 28, 1750005 (2017)
 !###################################################################################################################################
 subroutine partial_trace_he(rho, d, di, nss, ssys, dr, rhor)  ! Returns the partial trace for general multipartite systems
 implicit none
@@ -113,6 +114,7 @@ end
 !###################################################################################################################################
 ! The next four subroutines are used, and needed, for computing the partial trace for general multi-partite systems
 ! (for GENERAL matroices), (OPTMIZED version)
+! Ref. J. Maziero, Computing partial traces and reduced density matrices, Int. J. Mod. Phys. C 28, 1750005 (2017)
 !###################################################################################################################################
 subroutine partial_trace(rho, d, di, nss, ssys, dr, rhor)  ! Returns the partial trace for general multipartite systems
 implicit none
@@ -219,6 +221,7 @@ enddo ;   enddo ;   enddo ;   enddo
 end
 !###################################################################################################################################
 ! (UNOPTIMIZED) Implementation of the partial trace directly from its definition
+! Ref. J. Maziero, Computing partial traces and reduced density matrices, Int. J. Mod. Phys. C 28, 1750005 (2017)
 !###################################################################################################################################
 subroutine ptr(rho, d, di, nss, ssys, dr, rhor)  ! Returns the partial trace for general multipartite systems
 implicit none
