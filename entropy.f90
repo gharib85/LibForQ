@@ -55,4 +55,22 @@ mutual_information = neumann(da, rho_a) + neumann(db, rho_b) - neumann(da*db, rh
 deallocate( rho_a, rho_b)
 
 end
+!------------------------------------------------------------------------------------------------------------------------------------
+real(8) function fisher(d, rho, Ob) ! Returns the quantum Fisher information of rho for an observable Ob
+implicit none
+integer :: d  ! Dimension of rho and Ob
+complex(8) :: rho(1:d,1:d), Ob(1:d,1:d) ! The bipartite density matrix and the observable, both given in the computational basis
+complex(8), allocatable :: A(:,:)  ! Auxiliary matrix for sending rho to Lapack and for returning its eigenvectors
+real(8), allocatable :: W(:)  ! For the eigenvalues of rho
+complex(8) :: sandwhich, sw  ! For the function <psi|A|phi>
+integer :: j, k  ! Auxiliary variables for counters
+
+allocate( A(1:d,1:d), W(1:d) ) ;   A = rho ;   call lapack_zheevd('V', d, A, W)
+fisher = 0.d0
+do j = 1, d-1 ;   do k = j+1, d
+   sw = sandwhich(d, d, A(:,j), Ob, A(:,k)) ;   fisher = fisher + (((W(j)-W(k))**2.d0)/(W(j)+W(k)))*((abs(sw))**2.d0)
+enddo ;   enddo
+deallocate ( A, W )
+
+end
 !###################################################################################################################################

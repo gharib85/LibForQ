@@ -266,6 +266,16 @@ trace_re = 0.d0 ;   do j = 1, d ;   trace_re = trace_re + A(j,j) ;   enddo
 
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
+complex(8) function sandwhich(d1, d2, psi, A, phi)  ! Returns <psi|A|phi>
+implicit none
+integer :: d1, d2  ! Dimensions of the matrix and vectors, as shown below
+complex(8) :: A(1:d1,1:d2), psi(1:d1), phi(1:d2)  ! Matrix and vectors
+integer :: j, k  ! Auxiliary variable for counters
+
+sandwhich = 0.d0 ;   do j = 1, d1 ;   do k = 1, d2 ;   sandwhich = sandwhich + conjg(psi(j))*A(j,k)*phi(k) ;   enddo ;   enddo
+
+end
+!-----------------------------------------------------------------------------------------------------------------------------------
 real(8) function stokes_parameter(rho, ord_pm, n) !  Returns the Stokes' parameter Tr(rho (sigma_j1 \otimes cdots \otimes sigma_jn),
 ! given a n-qubit density matrix and a sequence of n Pauli matrices
 implicit none

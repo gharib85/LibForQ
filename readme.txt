@@ -35,7 +35,7 @@ $ gfortran -lblas -llapack -lforq main.f90
 
 REMARK #1: As seen above, this library depends on BLAS and Lapack. If you need random objects, 
 see https://github.com/jonasmaziero/LibForro.
-REMARK #2: Although on my Mac all the commands work fine, on Ubuntu I had to use the following command for compilation:
+REMARK #2: Although on my Mac all the commands above work fine, on Ubuntu I had to use the following command for compilation:
 $ gfortran main.f90 /usr/local/lib/libforq.a /usr/lib/liblapack.a /usr/lib/libblas.a
 
 Related references:
