@@ -35,8 +35,9 @@ $ gfortran -lblas -llapack -lforq main.f90
 
 REMARK #1: As seen above, this library depends on BLAS and Lapack. If you need random objects, 
 see https://github.com/jonasmaziero/LibForro.
-REMARK #2: Although on my Mac all the commands above work fine, on Ubuntu I had to use the following command for compilation:
+REMARK #2: Although on Mac all the commands above worked fine, on Ubuntu I had to use one of the following commands for compilation:
 $ gfortran main.f90 /usr/local/lib/libforq.a /usr/lib/liblapack.a /usr/lib/libblas.a
+$ gfortran main.f90 /usr/local/lib/libforq.a -llapack -lblas
 
 Related references:
 - J. Maziero, Random sampling of quantum states: A survey of methods, Braz. J. Phys. 45, 575 (2015), arXiv:1502.03644.
@@ -46,4 +47,4 @@ Related references:
 - J. Maziero, Computing partial traces and reduced density matrices, Int. J. Mod. Phys. C 28, 1750005 (2017). arXiv:1601.07458.
 - J. Maziero, Computing coherence vectors and correlation matrices, with application to quantum discord quantification, 
   Adv. Math. Phys. 2016, 6892178 (2016), arXiv:1603.05284.
-- J. Maziero, Computing partial transposes and related entanglement functions, arXiv:1609.00323.
+- J. Maziero, Computing partial transposes and related entanglement functions, Braz. J. Phys. 46, 605 (2016). arXiv:1609.00323.
