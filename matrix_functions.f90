@@ -4,10 +4,10 @@
 subroutine array_display_rr(nr, nc, A)  ! Displays a real array on the screen
 implicit none
 integer :: nr, nc  ! No. of rows and columns of the matrix
-real(8) :: A(1:nr,1:nc)  ! Complex matrix
-real(8) :: Ar(1:nr,1:nc)
+real(8) :: A(1:nr,1:nc)  ! Real matrix
+real(8) :: Ar(1:nr,1:nc)  ! Auxiliary variable
 integer :: j, k  ! Auxiliary variables for counters
-character(10) :: string
+character(10) :: string  ! Auxiliary variable
 
 string = "(   F10.5)" ;   write(string(2:4),'(I3)') nc
 Ar = real(A,4) ;   do j = 1, nr ;   print string, Ar(j,:) ;   enddo
@@ -84,9 +84,9 @@ end
 subroutine kron_prod_pauli_mat(ord_pm, n, kp_pauli_mat)  ! Returns the Kronecker's product of n Pauli matrices. 
 ! The especification of the order of the matrices is given as input within the vector vec_ord_pm, whose dimension is n
 implicit none
-integer, intent(in):: n
-integer, intent(in):: ord_pm(1:n)
-complex(kind=8), intent(out) :: kp_pauli_mat(1:2**n,1:2**n)
+integer, intent(in):: n  ! Number of qubits
+integer, intent(in):: ord_pm(1:n)  ! order for the indexes of the Pauli matrices
+complex(kind=8), intent(out) :: kp_pauli_mat(1:2**n,1:2**n)  ! The tensor product of the n Pauli matrices
 integer, parameter :: d2 = 2
 complex(kind=8) :: M2(1:d2,1:d2)
 complex(kind=8), allocatable :: M1(:,:), M1_kp_M2(:,:)
