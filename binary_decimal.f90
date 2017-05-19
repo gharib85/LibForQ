@@ -1,7 +1,7 @@
 !-----------------------------------------------------------------------------------------------------------------------------------
 subroutine bin2dec(vec_bin, nd, dec)
 ! Given a vector whose componets are the digits of a binary number, this function returns a base 10 integer.
-! OBS. The components of the vector vary from the first digit of the base-two number (vec_bin(1)) to the last (vec_bin(nd))
+! OBS. The components of the vector vary from the first digit of the base-two number (vec_bin(1)) to the last one (vec_bin(nd))
 implicit none
 integer :: nd  ! Number of digits
 integer :: vec_bin(1:nd) ! Vector with the digits of the binary number

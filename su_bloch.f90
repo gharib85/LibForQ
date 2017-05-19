@@ -14,7 +14,7 @@ sigma_3 = 0.d0 ;   sigma_3(1,1) = 1.d0 ;   sigma_3(2,2) = -1.d0
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
 subroutine gellmann(d, group, k, l, ggmm)  ! Returns one of the generalized Gell Mann matrices
-!Ref. J. Maziero, "Computing partial traces and reduced density matrices", arXiv:1601.07458.
+! Ref. J. Maziero, Computing partial traces and reduced density matrices, Int. J. Mod. Phys. C 28, 1750005 (2017),  arXiv:1601.07458
 implicit none
 integer :: d  ! Dimenson of the space, SU(d)
 integer, intent(in) :: group  ! Sets from which of the three groups the Gell Mann matrix should be picked out (it's 1, 2, or 3)
@@ -38,6 +38,8 @@ endif
 end
 !###################################################################################################################################
 !                                     BLOCH VECTOR & CORRELATION MATRIX (optimized)
+! Ref.: J. Maziero, Computing coherence vectors and correlation matrices, with application to quantum discord quantification,
+!       Adv. Math. Phys. 2016, 6892178 (2016), arXiv:1603.05284
 !###################################################################################################################################
 subroutine bloch_vector_gellmann(d, rho, bv)  ! Returns the BLOCH VECTOR using the generalized Gell Mann matrices as basis
 ! Care must be taken regarding the choice of indexes for the components, as shown below
@@ -187,6 +189,8 @@ enddo ;   enddo
 end
 !###################################################################################################################################
 !                                     BLOCH VECTOR & CORRELATION MATRIX (un-optimized)
+! Ref.: J. Maziero, Computing coherence vectors and correlation matrices, with application to quantum discord quantification,
+!       Adv. Math. Phys. 2016, 6892178 (2016), arXiv:1603.05284
 !###################################################################################################################################
 subroutine bloch_vector_gellmann_unopt(d, rho, bv)  ! Returns the BLOCH VECTOR using the generalized Gell Mann matrices as basis.
 ! UN-OPTIMIZED calculation

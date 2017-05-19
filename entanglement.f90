@@ -135,7 +135,7 @@ log_negativity = log2( norm_tr(d, rho_pt) )
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
 subroutine entanglement_hs(d, rho_pt, Ehs, css)  ! Returns the Hilbert-Schmidt entanglement of two qudits
-! Ref: J. Maziero, Computing partial transposes and related entanglement measures, 
+! Ref: J. Maziero, Computing partial transposes and related entanglement measures, Braz. J. Phys. 46, 605 (2016),  arXiv:1609.00323 
 implicit none
 integer :: d, dm, dp, dpp  ! For the dimensions (d is the whole system dimension)
 complex(8) :: rho_pt(1:d,1:d)  ! The partial transpose of the state under analysis (input). On exit, if css = 'y' and  

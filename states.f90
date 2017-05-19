@@ -33,7 +33,30 @@ deallocate( kp, sigma_0, sigma_1, sigma_2, sigma_3 )
 
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
-subroutine state_werner(da, x, rho)  ! Returns the WERNER's state, as written in the reference below:
+subroutine rho_x(c11, c22, c33, a3, b3, rho)  ! Two-qubit X state, in the standar form
+implicit none
+real(8) :: c11, c22, c33, a3, b3  ! Components of the correlation vector and polarizations
+complex(8) :: rho(1:4,1:4)  ! For the Bell-diagobal density matrix
+complex(8), allocatable :: kp(:,:)  ! For the Kronecker product between elements of the Pauli group
+complex(8), allocatable :: sigma_0(:,:), sigma_1(:,:), sigma_2(:,:), sigma_3(:,:)
+
+allocate( kp(1:4,1:4), sigma_0(1:2,1:2), sigma_1(1:2,1:2), sigma_2(1:2,1:2), sigma_3(1:2,1:2) )
+call pauli_group(sigma_0, sigma_1, sigma_2, sigma_3)
+
+rho = 0.d0
+call kronecker_product_c(sigma_0, 2, 2, sigma_0, 2, 2, kp) ;   rho = rho + kp  ! Identity term
+call kronecker_product_c(sigma_1, 2, 2, sigma_1, 2, 2, kp) ;   rho = rho + c11*kp  ! sigma_x term
+call kronecker_product_c(sigma_2, 2, 2, sigma_2, 2, 2, kp) ;   rho = rho + c22*kp  ! sigma_y term
+call kronecker_product_c(sigma_3, 2, 2, sigma_3, 2, 2, kp) ;   rho = rho + c33*kp  ! sigma_z term
+call kronecker_product_c(sigma_3, 2, 2, sigma_0, 2, 2, kp) ;   rho = rho + a3*kp  ! system A z magnetization
+call kronecker_product_c(sigma_0, 2, 2, sigma_3, 2, 2, kp) ;   rho = rho + b3*kp  ! system B z magnetization
+rho = (1.d0/4.d0)*rho
+
+deallocate( kp, sigma_0, sigma_1, sigma_2, sigma_3 )
+
+end
+!-----------------------------------------------------------------------------------------------------------------------------------
+subroutine state_werner(da, x, rho)  ! Returns the two-qudit WERNER's state, as written in the reference below:
 ! Ref: S. J. Akhtarshenas, H. Mohammadi, S. Karimi, and Z. Azmi, Computable measure of quantum correlation, QIP 14, 247 (2015).
 implicit none
 integer :: da ! Dimension of sub-system a (db = da and d = da*db = da^2)
@@ -56,7 +79,7 @@ enddo ;   enddo
 
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
-subroutine state_isotropic(da, x, rho)  ! Returns the ISOTROPIC state
+subroutine state_isotropic(da, x, rho)  ! Returns the two-qudit ISOTROPIC state
 ! Ref: S. J. Akhtarshenas, H. Mohammadi, S. Karimi, and Z. Azmi, Computable measure of quantum correlation, QIP 14, 247 (2015).
 implicit none
 integer :: da ! Dimension of sub-system a (db = da and d = da*db = da^2)
