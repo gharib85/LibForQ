@@ -1,3 +1,4 @@
+
 !###################################################################################################################################
 ! The next four subroutines are used, and needed, for computing the partial trace for general multi-partite systems 
 ! (for HERMITIAN matrices), (OPTMIZED version)
@@ -15,51 +16,54 @@ integer :: dr  ! Dimension of the reduced matrix (is the product of the dimensio
 complex(8) :: rhor(1:dr,1:dr)  ! Reduced matrix
 complex(8), allocatable :: mat1(:,:), mat2(:,:), rhored(:,:)  ! Auxiliary matrices
 integer :: j, k, l  ! Auxiliary variables for counters
-integer :: da, db, dc  ! Auxiliary variables for the dimensions
+integer :: da, db, dc, dn  ! Auxiliary variables for the dimensions
 
 ! For bipartite systems
 if ( nss == 2 ) then
-  if ( ssys(1) == 0 ) then ; call partial_trace_a_he(rho, di(1), di(2), rhor)
-  else if ( ssys(2) == 0 ) then ; call partial_trace_b_he(rho, di(1), di(2), rhor) 
+  if ( ssys(1) == 0 ) then ; call partial_trace_a_he(rho, di(1), di(2), rhor) ;   allocate(rhored(1:di(2),1:di(2)))
+  else if ( ssys(2) == 0 ) then ; call partial_trace_b_he(rho, di(1), di(2), rhor)  ;   allocate(rhored(1:di(1),1:di(1)))
   endif
   rhored = rhor
 ! For multipartite systems
 else if ( nss >= 3 ) then
   ! Left partial traces
     l = 0 ;   do ;   if ( ssys(l+1) == 1 ) exit ;   l = l + 1 ;   enddo  ! l defines up to which position we shall trace out
-    if ( l == 0 ) then
+    if ( l == 0 ) then ! We do not take the left partial trace in this case
+      dn = d ;   allocate(mat1(1:dn,1:dn))
       mat1 = rho  ! This matrix shall be used below if l = 0
-    else if ( l > 0 ) then
+    else if ( l > 0 ) then  ! Taking left partial trace
       if ( l == 1 ) then ;   da = di(1) ;   else ;   da = product(di(1:l)) ;  endif ;   db = d/da
-      allocate( mat1(1:db,1:db) ) ;   call partial_trace_a_he(rho, da, db, mat1)
-      d = db  ! After this operation, the matrix left over is mat1, whose dimension is d = db  
-      rhored = mat1    
+      allocate(mat1(1:db,1:db)) ;   call partial_trace_a_he(rho, da, db, mat1)
+      dn = db  ! After this operation, the matrix left over is mat1, whose dimension is dn = db      
     endif
   ! Right partial traces
     k = nss+1 ;   do ;   if ( ssys(k-1) == 1 ) exit ;   k = k - 1 ;   enddo  ! k defines up to which position we shall trace out
-    if ( k == (nss+1) ) then
+    if ( k == (nss+1) ) then ! We shall not take the right partial trace in this case
+      allocate(mat2(1:dn,1:dn))
       mat2 = mat1  ! This matrix shall be used below if k = nss+1
-      rhored = mat2
-    else if ( k < (nss+1) ) then
+      allocate(rhored(1:dn,1:dn)) ;   rhored = mat2 ;   deallocate(mat1)
+    else if ( k < (nss+1) ) then  ! Taking the right partial trace
       if ( k == nss ) then ;   db = di(nss) ;   else ;   db = product(di(k:nss)) ;  endif ;   da = d/db
-      allocate( mat2(1:da,1:da) ) ;   call partial_trace_b_he(mat1, da, db, mat2) ;   deallocate( mat1 )
-      d = da  ! After this operation, the matrix left over is mat2, whose dimension is d = da
-      rhored = mat2
+      allocate( mat2(1:da,1:da) ) ;   call partial_trace_b_he(mat1, da, db, mat2) 
+      dn = da  ! After this operation, the matrix left over is mat2, whose dimension is dn = da
+      allocate(rhored(1:dn,1:dn)) ;   rhored = mat2 ;   deallocate( mat1 )
     endif
-    if ( l == 0 .and. k == (nss+1) ) deallocate( mat1 )  ! To avoid allocating mat1 two times in these cases
   ! Inner partial traces
     if ( (k-l) > 3 ) then  ! If (k-l) <= 3 there is no need to take inner partial traces
     do j = (l+2), (k-2)
       if ( ssys(j) == 0 ) then
-        db = di(j) ;   if ( j == (k-2) ) then ;   dc = di(k-1) ;   else ;   dc = product(di(j+1:k-1)) ;  endif ;   da = d/(db*dc)
-        allocate( mat1(1:da*dc,1:da*dc) ) ;   call partial_trace_3_he(mat2, da, db, dc, mat1) ;   rhored = mat1
-        d = da*dc ;   deallocate( mat2 ) ;   allocate( mat2(1:d,1:d) ) ;   mat2 = mat1 ;   deallocate( mat1 )
+        deallocate(rhored)
+        db = di(j) ;   if ( j == (k-2) ) then ;   dc = di(k-1) ;   else ;   dc = product(di(j+1:k-1)) ;  endif ;   da = dn/(db*dc)
+        allocate(mat1(1:da*dc,1:da*dc)) ;   call partial_trace_3_he(mat2, da, db, dc, mat1)
+        allocate(rhored(1:da*dc,1:da*dc)) ;   rhored = mat1
+        if (j < (k-2)) then ;   dn = da*dc ;   deallocate(mat2) ;   allocate(mat2(1:dn,1:dn)) ;   mat2 = mat1 ;   endif
+        deallocate(mat1)
       endif
     enddo
     endif
+    deallocate(mat2)
 endif
-
-rhor = rhored
+rhor = rhored ;   deallocate(rhored)
 
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
@@ -128,51 +132,54 @@ integer :: dr  ! Dimension of the reduced matrix (is the product of the dimensio
 complex(8) :: rhor(1:dr,1:dr)  ! Reduced matrix
 complex(8), allocatable :: mat1(:,:), mat2(:,:), rhored(:,:)  ! Auxiliary matrices
 integer :: j, k, l  ! Auxiliary variables for counters
-integer :: da, db, dc  ! Auxiliary variables for the dimensions
+integer :: da, db, dc, dn  ! Auxiliary variables for the dimensions
 
 ! For bipartite systems
 if ( nss == 2 ) then
-  if ( ssys(1) == 0 ) then ; call partial_trace_a(rho, di(1), di(2), rhor)
-  else if ( ssys(2) == 0 ) then ; call partial_trace_b(rho, di(1), di(2), rhor) 
+  if ( ssys(1) == 0 ) then ; call partial_trace_a(rho, di(1), di(2), rhor) ;   allocate(rhored(1:di(2),1:di(2)))
+  else if ( ssys(2) == 0 ) then ; call partial_trace_b(rho, di(1), di(2), rhor) ;   allocate(rhored(1:di(1),1:di(1)))
   endif
   rhored = rhor
 ! For multipartite systems
 else if ( nss >= 3 ) then
   ! Left partial traces
     l = 0 ;   do ;   if ( ssys(l+1) == 1 ) exit ;   l = l + 1 ;   enddo  ! l defines up to which position we shall trace out
-    if ( l == 0 ) then
+    if ( l == 0 ) then ! We do not take the left partial trace in this case
+      dn = d ;   allocate(mat1(1:dn,1:dn))
       mat1 = rho  ! This matrix shall be used below if l = 0
-    else if ( l > 0 ) then
+    else if ( l > 0 ) then  ! Taking left partial trace
       if ( l == 1 ) then ;   da = di(1) ;   else ;   da = product(di(1:l)) ;  endif ;   db = d/da
-      allocate( mat1(1:db,1:db) ) ;   call partial_trace_a(rho, da, db, mat1)
-      d = db  ! After this operation, the matrix left over is mat1, whose dimension is d = db  
-      rhored = mat1    
+      allocate(mat1(1:db,1:db)) ;   call partial_trace_a(rho, da, db, mat1)
+      dn = db  ! After this operation, the matrix left over is mat1, whose dimension is dn = db      
     endif
   ! Right partial traces
     k = nss+1 ;   do ;   if ( ssys(k-1) == 1 ) exit ;   k = k - 1 ;   enddo  ! k defines up to which position we shall trace out
-    if ( k == (nss+1) ) then
+    if ( k == (nss+1) ) then ! We shall not take the right partial trace in this case
+      allocate(mat2(1:dn,1:dn))
       mat2 = mat1  ! This matrix shall be used below if k = nss+1
-      rhored = mat2
-    else if ( k < (nss+1) ) then
+      allocate(rhored(1:dn,1:dn)) ;   rhored = mat2 ;   deallocate(mat1)
+    else if ( k < (nss+1) ) then  ! Taking the right partial trace
       if ( k == nss ) then ;   db = di(nss) ;   else ;   db = product(di(k:nss)) ;  endif ;   da = d/db
-      allocate( mat2(1:da,1:da) ) ;   call partial_trace_b(mat1, da, db, mat2) ;   deallocate( mat1 )
-      d = da  ! After this operation, the matrix left over is mat2, whose dimension is d = da
-      rhored = mat2
+      allocate( mat2(1:da,1:da) ) ;   call partial_trace_b(mat1, da, db, mat2) 
+      dn = da  ! After this operation, the matrix left over is mat2, whose dimension is dn = da
+      allocate(rhored(1:dn,1:dn)) ;   rhored = mat2 ;   deallocate( mat1 )
     endif
-    if ( l == 0 .and. k == (nss+1) ) deallocate( mat1 )  ! To avoid allocating mat1 two times in these cases
   ! Inner partial traces
     if ( (k-l) > 3 ) then  ! If (k-l) <= 3 there is no need to take inner partial traces
     do j = (l+2), (k-2)
       if ( ssys(j) == 0 ) then
-        db = di(j) ;   if ( j == (k-2) ) then ;   dc = di(k-1) ;   else ;   dc = product(di(j+1:k-1)) ;  endif ;   da = d/(db*dc)
-        allocate( mat1(1:da*dc,1:da*dc) ) ;   call partial_trace_3(mat2, da, db, dc, mat1) ;   rhored = mat1
-        d = da*dc ;   deallocate( mat2 ) ;   allocate( mat2(1:d,1:d) ) ;   mat2 = mat1 ;   deallocate( mat1 )
+        deallocate(rhored)
+        db = di(j) ;   if ( j == (k-2) ) then ;   dc = di(k-1) ;   else ;   dc = product(di(j+1:k-1)) ;  endif ;   da = dn/(db*dc)
+        allocate(mat1(1:da*dc,1:da*dc)) ;   call partial_trace_3(mat2, da, db, dc, mat1)
+        allocate(rhored(1:da*dc,1:da*dc)) ;   rhored = mat1
+        if (j < (k-2)) then ;   dn = da*dc ;   deallocate(mat2) ;   allocate(mat2(1:dn,1:dn)) ;   mat2 = mat1 ;   endif
+        deallocate(mat1)
       endif
     enddo
     endif
+    deallocate(mat2)
 endif
-
-rhor = rhored
+rhor = rhored ;   deallocate(rhored)
 
 end
 !-----------------------------------------------------------------------------------------------------------------------------------

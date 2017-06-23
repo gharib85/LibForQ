@@ -4,3 +4,4 @@ In particular, I thank:
 - FELIX HUBER, for pointing out an error in one of the partial trace subroutines and for 
                helpful suggestions and questions, and also for implementing the Python Wrappers
                of some of the subroutines provided in LibForQ.
+- PRANAY BARKATAKI, whose questions helped to improve the general subroutine for partial trace.

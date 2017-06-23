@@ -10,7 +10,8 @@ integer :: i  !  Auxiliary variable for counters
 
 dec = 0
 do i = 1, nd
-  dec = dec + vec_bin(i)*2**(nd - i)
+  !dec = dec + vec_bin(i)*2**(nd - i)
+  if (vec_bin(i) == 1) dec = dec + 2**(nd - i)
 enddo
 
 end
