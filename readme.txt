@@ -1,3 +1,4 @@
+
 LibForQ: A Fortran Library for Quantum Information Science
 
 In this library we will continuously add and improve Fortran code to perform several numerical tasks one frequently 
@@ -19,7 +20,7 @@ $ gfortran -lblas -llapack *.f90
 To run the executable file a.out generated just use:
 $ ./a.out
 
-Another, perhaps more convenient, manner of using the code is by creating a static library. For that purpose you may 
+Another, perhaps more convenient, manner of using the code is by creating a static LIBRARY. For that purpose you may 
 follow the simple steps below:
 1) Download the code
 2) Go to the associated folder

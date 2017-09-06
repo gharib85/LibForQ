@@ -1,6 +1,6 @@
-!###################################################################################################################################
+!-----------------------------------------------------------------------------------------------------------------------------------
 !                                                       Entanglement
-!###################################################################################################################################
+!-----------------------------------------------------------------------------------------------------------------------------------
 real(8) function eentropy(psi, d, da, db, ssys)  ! Returns the ENTANGLEMENT ENTROPY of a bipartite pure state
 implicit none
 integer :: d, da, db  ! Dimension of whole state space and of the marginal spaces
@@ -48,9 +48,9 @@ end
 real(8) function concurrence_2qb(rho)  ! Returns the entanglement measure concurrence, for two-qubit states
 ! Ref: W. K. Wootters, Entanglement of Formation of an Arbitrary State of Two Qubits, Phys.Rev.Lett. 80, 2245 (1998).
 implicit none
-complex(8) :: rho(1:2**2,1:2**2)  ! Density matrix we want to compute the concurrence
-complex(8) :: R(1:2**2,1:2**2), rho_tilde(1:2**2,1:2**2), s2_kp_s2(1:2**2,1:2**2)  ! Auxiliary matrices
-complex(8) :: egv(1:2**2) ! Eigenvalues of R = rho*rho^tilde
+complex(8) :: rho(4,4)  ! Density matrix we want to compute the concurrence
+complex(8) :: R(4,4), rho_tilde(4,4), s2_kp_s2(4,4)  ! Auxiliary matrices
+complex(8) :: egv(4) ! Eigenvalues of R = rho*rho^tilde
 real(8) :: egv_max  ! The greater eigenvalue of R
 complex(8) :: sigma_0(2,2), sigma_1(2,2), sigma_2(2,2), sigma_3(2,2)
 
@@ -172,4 +172,4 @@ endif
 deallocate( A, W )
 
 end
-!###################################################################################################################################
+!-----------------------------------------------------------------------------------------------------------------------------------

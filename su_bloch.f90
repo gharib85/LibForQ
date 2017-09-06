@@ -1,6 +1,5 @@
-!###################################################################################################################################
+!-----------------------------------------------------------------------------------------------------------------------------------
 !                                                 Generators of SU(n)
-!###################################################################################################################################
 !-----------------------------------------------------------------------------------------------------------------------------------
 subroutine pauli_group(sigma_0, sigma_1, sigma_2, sigma_3)  ! Defines the three Pauli's matrices and the identity matrix
 implicit none
@@ -36,12 +35,12 @@ else if ( group == 3 ) then  ! Asymmetric generators
 endif
 
 end
-!###################################################################################################################################
+!-----------------------------------------------------------------------------------------------------------------------------------
 !                                     BLOCH VECTOR & CORRELATION MATRIX (optimized)
 ! Ref.: J. Maziero, Computing coherence vectors and correlation matrices, with application to quantum discord quantification,
 !       Adv. Math. Phys. 2016, 6892178 (2016), arXiv:1603.05284
-!###################################################################################################################################
-subroutine bloch_vector_gellmann(d, rho, bv)  ! Returns the BLOCH VECTOR using the generalized Gell Mann matrices as basis
+!-----------------------------------------------------------------------------------------------------------------------------------
+subroutine bloch_vector_gellmann(d, rho, bv)  ! Returns the BLOCH VECTOR using the generalized Gell Mann's matrices as basis
 ! Care must be taken regarding the choice of indexes for the components, as shown below
 ! Ref. J. Maziero, "Computing partial traces and reduced density matrices", arXiv:1601.07458.
 implicit none
@@ -51,17 +50,17 @@ real(8), intent(out) :: bv(1:(d**2-1))  ! Bloch vector
 integer :: j, k, l  ! Auxiliary variables for counters
 
 bv = 0.d0  ! Initializes the Bloch vector
-! First d-1 components of the Bloch vector, corresponding to the digonal generators
+! First d-1 components of the Bloch vector, corresponding to the DIAGONAL generators
 do j = 1, d-1
   do k = 1, j ;   bv(j) = bv(j) + dble(rho(k,k)) ;   enddo
   bv(j) = ( bv(j) - dble(j)*dble(rho(j+1,j+1)) )*(dble(d)/sqrt(dble(2*j*(j+1))))
 enddo
-! Components of the Bloch vector corresponding to the non-diagonal symmetric generators
+! Components of the Bloch vector corresponding to the non-diagonal SYMMETRIC generators
 j = d-1
 do k = 1, d-1 ;   do l = k+1, d  ! Here j starts in j = d and ends in j = d*(d+1)/2 - 1
   j = j + 1 ;  bv(j) = dble(d)*dble(rho(l,k))
 enddo ;   enddo
-! Components of the Bloch vector corresponding to the non-diagonal asymmetric generators
+! Components of the Bloch vector corresponding to the non-diagonal ANTI-SYMMETRIC generators
 do k = 1, d-1 ;   do l = k+1, d  ! Here j starts in j = d*(d+1)/2 and ends in j = d**2 - 1
   j = j + 1 ;   bv(j) = dble(d)*aimag(rho(l,k))
 enddo ;   enddo
@@ -187,11 +186,11 @@ enddo ;   enddo
  corrmat(dda+1:da**2-1,ddb+1:db**2-1) = cm33 ;   deallocate( cm33 )
 
 end
-!###################################################################################################################################
+!-----------------------------------------------------------------------------------------------------------------------------------
 !                                     BLOCH VECTOR & CORRELATION MATRIX (un-optimized)
 ! Ref.: J. Maziero, Computing coherence vectors and correlation matrices, with application to quantum discord quantification,
 !       Adv. Math. Phys. 2016, 6892178 (2016), arXiv:1603.05284
-!###################################################################################################################################
+!-----------------------------------------------------------------------------------------------------------------------------------
 subroutine bloch_vector_gellmann_unopt(d, rho, bv)  ! Returns the BLOCH VECTOR using the generalized Gell Mann matrices as basis.
 ! UN-OPTIMIZED calculation
 ! Care must be taken regarding the choice of indexes for the components, as shown below
@@ -329,4 +328,4 @@ enddo ;   enddo
  corrmat(dda+1:da**2-1,ddb+1:db**2-1) = cm33 ;   deallocate( cm33 )
 
 end
-!###################################################################################################################################
+!-----------------------------------------------------------------------------------------------------------------------------------
