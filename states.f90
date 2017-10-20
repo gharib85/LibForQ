@@ -1,12 +1,21 @@
 !-----------------------------------------------------------------------------------------------------------------------------------
 !                                                 Some popular Quantum STATES
 !-----------------------------------------------------------------------------------------------------------------------------------
-subroutine psi_qubit(theta, phi, psi)  ! General one-qubit state
+subroutine psi_qubit(theta, phi, psi)  ! General one-qubit pure state
 implicit none
 real(8) :: theta, phi
 complex(8) :: psi(4) 
 
 psi(1) = cos(theta/2.d0) ;  psi(2) = sin(theta/2.d0)*(cos(phi) + sin(phi)*(0.d0,1.d0))
+
+end
+!-----------------------------------------------------------------------------------------------------------------------------------
+subroutine rho_qubit(r1, r2, r3, rho)  ! General one-qubit mixed state
+implicit none
+real(8) :: r1, r2, r3  ! Components of Bloch's vector
+complex(8) :: rho(2,2), s0(2,2), s1(2,2), s2(2,2), s3(2,2)
+
+call pauli_group(s0, s1, s2, s3);  rho = 0.5d0*(s0 + r1*s1 + r2*s2 + r3*s3)
 
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
