@@ -1,4 +1,4 @@
-
+-----------------------------------------------------------------------------------------------------------------------------------
 I would like to thank everyone that in some way helped me and/or motivated me to improve this code.
 In particular, I thank:
 - CARLOS ALBERTO VAZ DE MORAIS JUNIOR, for tips regarding the creation of Fortran Libraries.
@@ -6,3 +6,4 @@ In particular, I thank:
                helpful suggestions and questions, and also for implementing the Python Wrappers
                of some of the subroutines provided in LibForQ.
 - PRANAY BARKATAKI, whose questions helped to improve the general subroutine for partial traces.
+-----------------------------------------------------------------------------------------------------------------------------------

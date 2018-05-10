@@ -276,39 +276,6 @@ sandwhich = 0.d0 ;   do j = 1, d1 ;   do k = 1, d2 ;   sandwhich = sandwhich + c
 
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
-real(8) function stokes_parameter(rho, ord_pm, n) !  Returns the Stokes' parameter Tr(rho (sigma_j1 \otimes cdots \otimes sigma_jn),
-! given a n-qubit density matrix and a sequence of n Pauli matrices
-implicit none
-integer :: n  ! No. of qubits
-integer :: ord_pm(n)  ! Vector with the indexes for the order of the Pauli matrices
-complex(8) :: rho(1:2**n,1:2**n)  ! Density matrix
-complex(8), allocatable :: kp_pauli_mat(:,:) ! Matrix for the Kronecker product of nqb Pauli matrices 
-integer :: j, k  ! Auxiliary variables for counters
-
-allocate ( kp_pauli_mat(1:2**n,1:2**n) )
-call kron_prod_pauli_mat(ord_pm, n, kp_pauli_mat)
-stokes_parameter = 0.d0
-do j = 1, 2**n ;   do k = 1, 2**n ;   stokes_parameter = stokes_parameter + dble(kp_pauli_mat(j,k)*rho(k,j)) ;   end do ;   end do
-deallocate ( kp_pauli_mat )
-
-end
-!-----------------------------------------------------------------------------------------------------------------------------------
-subroutine stokes_parameters_2qb(rho, ma, mb, corr)  ! Computes the Stokes parameters for a two-qubit density matrix
-implicit none
-complex(8) :: rho(1:4,1:4)  ! Density matrix
-real(8) :: ma(1:3)  ! Vector for the polarizations (magnetizations) of qubit a
-real(8) :: mb(1:3)  ! Vector for the polarizations (magnetizations) of qubit b
-real(8) :: corr(1:3,1:3)  ! Matrix for the correlations
-integer :: ord_pm(1:2)  ! For the order of the Pauli matrix, to be sent to the subroutine which computes the Stokes parameters
-real(8) :: stokes_parameter  ! For the Stokes parameter function
-integer :: j, k  ! Auxiliary variables for counters
-
-ord_pm(2) = 0 ;   do j = 1, 3;   ord_pm(1) = j ;   ma(j) = stokes_parameter(rho, ord_pm, 2) ;   enddo
-ord_pm(1) = 0 ;   do j = 1, 3;   ord_pm(2) = j ;   mb(j) = stokes_parameter(rho, ord_pm, 2) ;   enddo
-do j = 1, 3 ;   ord_pm(1) = j ;   do k = 1, 3 ;    ord_pm(2) = k ;   corr(j,k) = stokes_parameter(rho, ord_pm, 2) ;   enddo ; enddo
-     
-end
-!-----------------------------------------------------------------------------------------------------------------------------------
 real(8) function matrix_average_he(d, psi, A)  ! Returns the average of an HERMITIAN MATRIX A for a state vector psi
 implicit none
 integer :: d  ! Dimension of the vector and operator

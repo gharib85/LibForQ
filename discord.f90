@@ -137,7 +137,7 @@ call stokes_parameters_2qb(rho, ma, mb, corr)
 if (ssys == 'a' ) then
   do m = 1, 3 ;   do n = 1, 3 ;   mK(m,n) = ma(m)*ma(n) ;   enddo ;   enddo ;   mK = mK + matmul(corr,transpose(corr))
   call lapack_dsyevd('N', 3, mK, W)
-  discord_hs_2qb = 0.25d0*( (norm_r(3, ma))**2.d0 + (norm_hs(3, 3, corr))**2.d0 - maxval(W) )
+  discord_hs_2qb = 0.25d0*((norm_r(3, ma))**2.d0 + (norm_hs(3, 3, corr))**2.d0 - maxval(W))
 else if ( ssys == 'b' ) then
   do m = 1, 3 ;   do n = 1, 3 ;   mK(m,n) = mb(m)*mb(n) ;   enddo ;   enddo ;   mK = mK + matmul(corr,transpose(corr))
   call lapack_dsyevd('N', 3, mK, W)
