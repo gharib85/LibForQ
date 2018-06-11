@@ -23,7 +23,7 @@ real(8) :: mterm  ! Auxiliary variable for the elements of the diagonal generato
 integer :: m  ! Auxiliary variable for counters
 integer :: j  ! Auxiliary variable for the index of the diagonal generators
 
-ggmm = 0.d0  
+ggmm = 0.d0
 
 if ( group == 1 ) then ! Diagonal generators
   j = k ;   mterm = sqrt(2.d0/(dble(j*(j+1))))  ! G = sqrt(2/(j(j+1)))*(sum_{m=1...j)|m><m| -j|j+1><j+1|)
@@ -187,7 +187,7 @@ enddo ;   enddo
 
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
-!                                     BLOCH VECTOR & CORRELATION MATRIX (un-optimized)
+!                                     BLOCH VECTOR & CORRELATION MATRIX (unoptimized)
 ! Ref.: J. Maziero, Computing coherence vectors and correlation matrices, with application to quantum discord quantification,
 !       Adv. Math. Phys. 2016, 6892178 (2016), arXiv:1603.05284
 !-----------------------------------------------------------------------------------------------------------------------------------
@@ -204,7 +204,7 @@ complex(8), allocatable :: ggmm(:,:)  ! For the generalized Gell Mann matrices
 real(8) :: trace_he  ! For the trace function (for Hermitian matices)
 
 allocate( ggmm(1:d,1:d) )
- 
+
 ! First d-1 components of the Bloch vector, corresponding to the digonal generators
 do j = 1, d-1 ;   call gellmann(d, 1, j, j, ggmm) ;   bv(j) = (dble(d)/2.d0)*trace_he(d, matmul(rho,ggmm)) ;   enddo
 ! Components of the Bloch vector corresponding to the non-diagonal symmetric generators

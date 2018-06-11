@@ -1,6 +1,16 @@
-!-----------------------------------------------------------------------------------------------------------------------------------
+!------------------------------------------------------------------------------------------------------------------------------------
 !                                                        Discord
-!-----------------------------------------------------------------------------------------------------------------------------------
+!------------------------------------------------------------------------------------------------------------------------------------
+real (8) function discord_He(da, db, rhoAB)
+! Hellinger discord of qubit-qudit subsystems
+! Ref.
+integer :: da, db
+complex(8) :: rhoAB(da*db,da*db)
+
+  
+
+end
+!------------------------------------------------------------------------------------------------------------------------------------
 real(8) function discord_oz_bds(rho)  ! Returns the OLLIVIER-ZUREK discord for 2-qubit Bell-diagonal states
 ! Ref: S. Luo, Quantum discord for two-qubit systems, PRA 77, 042303 (2008).
 implicit none
@@ -43,7 +53,7 @@ l10 = ( 1.d0 - c11 + c22 + c33 )/4.d0 ;   l11 = ( 1.d0 - c11 - c22 - c33 )/4.d0
 MI_bds = l00*log2(4.d0*l00) + l01*log2(4.d0*l01) + l10*log2(4.d0*l10) + l11*log2(4.d0*l11)
 
 end
-!-----------------------------------------------------------------------------------------------------------------------------------
+!------------------------------------------------------------------------------------------------------------------------------------
 real(8) function discord_re_bds(rho)  ! Returns the RELATIVE ENTROPY discord for 2-qubit Bell-diagonal states
 ! Ref: K. Modi et al., Unified View of Quantum and Classical Correlations, PRL 104, 080501 (2010).
 implicit none
@@ -55,11 +65,11 @@ real(8) :: pv(1:4)  ! Auxiliary variable for a probability vector
 real(8) :: shannon   ! For the Shannon entropy
 
 A = rho ;   call lapack_zheevd('N', 4, A, W)
-q = W(4) + W(3)  ;   pv(1) = q/2.d0 ;   pv(2) = pv(1) ;   pv(3) = (1.d0-q)/2.d0 ;   pv(4) = pv(3) 
+q = W(4) + W(3)  ;   pv(1) = q/2.d0 ;   pv(2) = pv(1) ;   pv(3) = (1.d0-q)/2.d0 ;   pv(4) = pv(3)
 discord_re_bds = shannon(4, pv) - shannon(4, W)
 
 end
-!-----------------------------------------------------------------------------------------------------------------------------------
+!------------------------------------------------------------------------------------------------------------------------------------
 real(8) function discord_tr_xs(ssys, rho)  ! Returns the TRACE DISTANCE discord for 2-qubit X states
 ! Ref: F. Ciccarello et al., Toward computability of trace distance discord, NJP 16, 013038 (2014).
 implicit none
@@ -71,7 +81,7 @@ character(1) :: ssys  ! Determines which subsystem is the classical one in the e
  c11 = 2.d0*(abs(rho(2,3)) + abs(rho(1,4))) ;   c22 = 2.d0*(abs(rho(2,3)) - abs(rho(1,4)))
  c33 = 1.d0 - 2.d0*(dble(rho(2,2)) + dble(rho(3,3)))
  x1 = max(c11**2.d0,c22**2.d0) ;   x2 = min(c11**2.d0,c22**2.d0) ;   x3 = min(c33**2.d0,x1)
- 
+
 if ( ssys == 'a' ) then
   a3 = 2.d0*(dble(rho(1,1)) + dble(rho(2,2))) - 1.d0
   x4 = max(c33**2.d0,a3**2.d0+x2)
@@ -93,7 +103,7 @@ real(8) :: c11, c22, c33, a3, b3  ! For the nonzero correlation matrix and Bloch
  c11 = 2.d0*(abs(rho(2,3)) + abs(rho(1,4))) ;   c22 = 2.d0*(abs(rho(2,3)) - abs(rho(1,4)))
  c33 = 1.d0 - 2.d0*(dble(rho(2,2)) + dble(rho(3,3))) ;   a3 = 2.d0*(dble(rho(1,1)) + dble(rho(2,2))) - 1.d0
  b3 = 2.d0*(dble(rho(1,1)) + dble(rho(3,3))) - 1.d0
- 
+
  ccorr_tr_xs = max(abs(c11),abs(c22),abs(c33-a3*b3))
 
 end
@@ -108,16 +118,16 @@ real(8) :: kmax, kint, kmin  ! Auxiliary varibles
  c11 = 2.d0*(abs(rho(2,3)) + abs(rho(1,4))) ;   c22 = 2.d0*(abs(rho(2,3)) - abs(rho(1,4)))
  c33 = 1.d0 - 2.d0*(dble(rho(2,2)) + dble(rho(3,3)))
  a3 = 2.d0*(dble(rho(1,1)) + dble(rho(2,2))) - 1.d0 ;   b3 = 2.d0*(dble(rho(1,1)) + dble(rho(3,3))) - 1.d0
- 
+
  !kmax = max(abs(c11),abs(c22),abs(c33-a3*b3)) ;   kmin = min(abs(c11),abs(c22),abs(c33-a3*b3))
  !kint = abs(c11) + abs(c22) + abs(c33-a3*b3) - kmax - kmin
  !tcorr_tr_xs = 0.5d0*(kmax + max(kmax,kmin+kint))
 
  ! The result seems to be the same for both expressions
  tcorr_tr_xs = 0.25*(abs(c11+c22+c33-a3*b3) + abs(c11+c22-c33+a3*b3) + abs(c11-c22+c33-a3*b3) + abs(c11-c22-c33+a3*b3))
- 
+
 end
-!----------------------------------------------------------------------------------------------------------------------------------
+!-----------------------------------------------------------------------------------------------------------------------------------
 real(8) function discord_hs_2qb(ssys, rho)  ! Returns the HILBERT-SCHMIDT discord for 2-qubit states
 ! Ref: B. Dakić, V. Vedral, Č. Brukner, Necessary and sufficient condition for nonzero quantum discord, PRL 105, 190502 (2010).
 implicit none
@@ -145,8 +155,8 @@ else if ( ssys == 'b' ) then
 endif
 
 end
-!-----------------------------------------------------------------------------------------------------------------------------------
-real(8) function discord_hs(ssys, da, db, rho)  ! Returns the HILBERT-SCHMIDT discord 
+!------------------------------------------------------------------------------------------------------------------------------------
+real(8) function discord_hs(ssys, da, db, rho)  ! Returns the HILBERT-SCHMIDT discord
 ! Ref: S. Luo and S. Fu, Geometric measure of quantum discord, PRA 82, 034302 (2010)
 implicit none
 character(1), intent(in) :: ssys  ! Tells if sub-system a or b is classical one, in the minimization
@@ -165,7 +175,7 @@ dda = da**2 - 1 ;   ddb = db**2 - 1
 if (ssys == 'a' ) then ! CQ states are 'classical'
   allocate( rho_a(1:da,1:da) ) ;   call partial_trace_b_he(rho, da, db, rho_a)
   allocate( bv(1:dda) ) ;   call bloch_vector_gellmann(da, rho_a, bv) ;   deallocate( rho_a )  ! Computes the Bloch vector
-  allocate( proj_bv(1:dda,1:dda) ) ;   call projector_re(bv, dda, proj_bv) ;   deallocate( bv )  
+  allocate( proj_bv(1:dda,1:dda) ) ;   call projector_re(bv, dda, proj_bv) ;   deallocate( bv )
   allocate( corrmat(1:dda,1:ddb) ) ;   call corrmat_gellmann(da, db, rho, corrmat)  ! Computes the correlation matrix
   ! A-correlation matrix
   allocate( Xi(1:dda,1:dda) ) ;   Xi = (2.d0/dble(da*da*db))*( proj_bv + (2.d0/dble(db))*matmul(corrmat,transpose(corrmat)) )
@@ -175,18 +185,18 @@ if (ssys == 'a' ) then ! CQ states are 'classical'
 else if ( ssys == 'b' ) then  ! QC states are 'classical'
   allocate( rho_b(1:db,1:db) ) ;   call partial_trace_a_he(rho, da, db, rho_b)
   allocate( bv(1:ddb) ) ;   call bloch_vector_gellmann(db, rho_b, bv) ;   deallocate( rho_b )  ! Computes the Bloch vector
-  allocate( proj_bv(1:ddb,1:ddb) ) ;   call projector_re(bv, ddb, proj_bv) ;   deallocate( bv ) 
+  allocate( proj_bv(1:ddb,1:ddb) ) ;   call projector_re(bv, ddb, proj_bv) ;   deallocate( bv )
   allocate( corrmat(1:dda,1:ddb) ) ;   call corrmat_gellmann(da, db, rho, corrmat)  ! Computes the correlation matrix
   ! B-correlation matrix
-  allocate( Xi(1:ddb,1:ddb) ) ;   Xi = (2.d0/dble(da*db*db))*( proj_bv + (2.d0/dble(da))*matmul(transpose(corrmat),corrmat) ) 
+  allocate( Xi(1:ddb,1:ddb) ) ;   Xi = (2.d0/dble(da*db*db))*( proj_bv + (2.d0/dble(da))*matmul(transpose(corrmat),corrmat) )
   deallocate( proj_bv, corrmat )
   allocate( W(1:ddb) ) ;   call lapack_dsyevd('N', ddb, Xi, W) ;   deallocate( Xi )
   discord_hs = sum(W(1:(db*(db-1)))) ;   deallocate( W )  ! for the ameliorated 2-norm discord
 endif
 
 end
-!-----------------------------------------------------------------------------------------------------------------------------------
-real(8) function discord_hsa(ssys, da, db, rho)  ! Returns the AMENDED HILBERT-SCHMIDT discord 
+!------------------------------------------------------------------------------------------------------------------------------------
+real(8) function discord_hsa(ssys, da, db, rho)  ! Returns the AMENDED HILBERT-SCHMIDT discord
 ! Ref: S. J. Akhtarshenas et al., Computable measure of quantum correlation, QIP 14, 247 (2015).
 implicit none
 character(1), intent(in) :: ssys  ! Tells if sub-system a or b is classical one, in the minimization
@@ -206,7 +216,7 @@ dda = da**2 - 1 ;   ddb = db**2 - 1
 if (ssys == 'a' ) then ! CQ states are 'classical'
   allocate( rho_a(1:da,1:da) ) ;   call partial_trace_b_he(rho, da, db, rho_a)
   allocate( bv(1:dda) ) ;   call bloch_vector_gellmann(da, rho_a, bv) ;   deallocate( rho_a )  ! Computes the Bloch vector
-  allocate( proj_bv(1:dda,1:dda) ) ;   call projector_re(bv, dda, proj_bv) ;   deallocate( bv )  
+  allocate( proj_bv(1:dda,1:dda) ) ;   call projector_re(bv, dda, proj_bv) ;   deallocate( bv )
   allocate( corrmat(1:dda,1:ddb) ) ;   call corrmat_gellmann(da, db, rho, corrmat)  ! Computes the correlation matrix
   ! A-correlation matrix
   allocate( Xi(1:dda,1:dda) ) ;   Xi = (2.d0/dble(da*da*db))*( proj_bv + (2.d0/dble(db))*matmul(corrmat,transpose(corrmat)) )
@@ -214,14 +224,14 @@ if (ssys == 'a' ) then ! CQ states are 'classical'
   allocate( W(1:dda) ) ;   call lapack_dsyevd('N', dda, Xi, W) ;   deallocate( Xi )
   allocate( rho_b(1:db,1:db) ) ;   call partial_trace_a_he(rho, da, db, rho_b)
   discord_hsa = (1.d0/purity(db, rho_b))*sum(W(1:(da*(da-1)))) ;   deallocate( W, rho_b )  ! for the ameliorated 2-norm discord
-  
+
 else if ( ssys == 'b' ) then  ! QC states are 'classical'
   allocate( rho_b(1:db,1:db) ) ;   call partial_trace_a_he(rho, da, db, rho_b)
   allocate( bv(1:ddb) ) ;   call bloch_vector_gellmann(db, rho_b, bv) ;   deallocate( rho_b )  ! Computes the Bloch vector
-  allocate( proj_bv(1:ddb,1:ddb) ) ;   call projector_re(bv, ddb, proj_bv) ;   deallocate( bv ) 
+  allocate( proj_bv(1:ddb,1:ddb) ) ;   call projector_re(bv, ddb, proj_bv) ;   deallocate( bv )
   allocate( corrmat(1:dda,1:ddb) ) ;   call corrmat_gellmann(da, db, rho, corrmat)  ! Computes the correlation matrix
   ! B-correlation matrix
-  allocate( Xi(1:ddb,1:ddb) ) ;   Xi = (2.d0/dble(da*db*db))*( proj_bv + (2.d0/dble(da))*matmul(transpose(corrmat),corrmat) ) 
+  allocate( Xi(1:ddb,1:ddb) ) ;   Xi = (2.d0/dble(da*db*db))*( proj_bv + (2.d0/dble(da))*matmul(transpose(corrmat),corrmat) )
   deallocate( proj_bv, corrmat )
   allocate( W(1:ddb) ) ;   call lapack_dsyevd('N', ddb, Xi, W) ;   deallocate( Xi )
   allocate( rho_a(1:da,1:da) ) ;   call partial_trace_b_he(rho, da, db, rho_a)
@@ -229,7 +239,7 @@ else if ( ssys == 'b' ) then  ! QC states are 'classical'
 endif
 
 end
-!-----------------------------------------------------------------------------------------------------------------------------------
+!------------------------------------------------------------------------------------------------------------------------------------
 ! needs more tests
 real(8) function discord_mid(da, db, rho)  ! Returns the MEASUREMENT-INDUCED DISTURBANCE
 ! Ref: S. Luo, Using measurement-induced disturbance to characterize correlations as classical or quantum, PRA 77, 022301 (2008)
@@ -255,7 +265,7 @@ call partial_trace_a_he(rho, da, db, rho_b) ;   call partial_trace_b_he(rho, da,
 mi_rho = neumann(da, rho_a) + neumann(db, rho_b) - neumann(d, rho)
 
 allocate( MA(1:da,1:da), Wa(1:da), MB(1:db,1:db), Wb(1:db) )
-MA = rho_a ;   call lapack_zheevd('V', da, MA, Wa);   MB = rho_b ;   call lapack_zheevd('V', db, MB, Wb) 
+MA = rho_a ;   call lapack_zheevd('V', da, MA, Wa);   MB = rho_b ;   call lapack_zheevd('V', db, MB, Wb)
 deallocate( rho_a, rho_b, Wa, Wb ) ;   allocate( proj_a(1:da,1:da), proj_b(1:db,1:db), rhom(1:d,1:d), kp(1:d,1:d) )
 rhom = 0.d0
 do j = 1, da ;   do k = 1, db
@@ -269,9 +279,9 @@ mi_rhom = mutual_information(da, db, rhom) ;   deallocate(rhom)
 discord_mid = mi_rho - mi_rhom
 
 end
-!-----------------------------------------------------------------------------------------------------------------------------------
+!------------------------------------------------------------------------------------------------------------------------------------
 ! needs more tests
-real(8) function discord_easy(ssys, da, db, rho)  ! Returns the expression for the EASY discord 
+real(8) function discord_easy(ssys, da, db, rho)  ! Returns the expression for the EASY discord
 ! Ref: H. Cao, Z.-Q. Wu, L.-Y. Hu, X.-X. Xu, and J.-H. Huang, An easy measure of quantum correlation, QIP 14, 4103 (2015).
 ! REMARK. Not tested yet
 implicit none
@@ -289,7 +299,7 @@ if (ssys == 'a' ) then ! CQ states are the 'classical' ones
 else if ( ssys == 'b' ) then  ! QC states are the 'classical' ones
   disc = 0.d0
   allocate( MM(1:db,1:db), MM1(1:db,1:db),  MM2(1:db,1:db) ) ;   MM = 0.d0
-  do j = 1, da 
+  do j = 1, da
     if (j < da) then ;  ull = da ;  else if (j == da) then ;   ull = da-1 ;   endif
     do l = 1, ull
       MM1 = rho((j-1)*db+1:j*db,(l-1)*db+1:l*db)
@@ -309,7 +319,7 @@ else if ( ssys == 'b' ) then  ! QC states are the 'classical' ones
 endif
 
 end
-!-----------------------------------------------------------------------------------------------------------------------------------
+!------------------------------------------------------------------------------------------------------------------------------------
 ! needs more tests
 real(8) function min_hs(ssys, da, db, rho)  ! Returns the MEASUREMENT-INDUCED NONLOCALITY (with Hilbert-Schmidt distance)
 ! Refs: Phys. Rev. Lett. 106, 120401 (2011)
@@ -336,32 +346,32 @@ if ( ssys == 'a' ) then ! measurements over a
   if ( da == 2 ) then  ! exact expression
     allocate(rho_a(1:da,1:da)) ;   call partial_trace_b_he(rho, da, db, rho_a)
     allocate(bv(1:dda)) ;   call bloch_vector_gellmann(da, rho_a, bv) ;   deallocate(rho_a)  ! Computes the Bloch vector
-    if ( norm_r(dda, bv) > 1.d-15 ) then 
+    if ( norm_r(dda, bv) > 1.d-15 ) then
       min_hs = trace_re(dda, Xi) - matrix_average_sy(dda, bv, Xi)/(norm_r(dda, bv)**2.d0)
     else
       min_hs = trace_re(dda, Xi) - min(W(1),W(2),W(3)) ;   deallocate(W)
     endif
   else if ( da > 2 ) then  ! lower bound
     min_hs = sum(W(da:dda)) ;   deallocate(W)
-  endif 
+  endif
   deallocate(Xi)
-  
+
 else if ( ssys == 'b' ) then  ! measurements over b
   allocate( Xi(1:ddb,1:ddb) ) ;   Xi = (4.d0/dble(da*da*db*db))*matmul(transpose(corrmat),corrmat) ! Xi = T^t*T = (4/da^2*db^2)*C^t*C
   deallocate(corrmat) ;   allocate(W(1:ddb)) ;   call lapack_dsyevd('N', ddb, Xi, W)
   if ( db == 2 ) then  ! exact expression
     allocate(rho_b(1:db,1:db)) ;   call partial_trace_a_he(rho, da, db, rho_b)
     allocate(bv(1:ddb)) ;   call bloch_vector_gellmann(db, rho_b, bv) ;   deallocate(rho_b)  ! Computes the Bloch vector
-    if ( norm_r(ddb, bv) > 1.d-15 ) then 
+    if ( norm_r(ddb, bv) > 1.d-15 ) then
       min_hs = trace_re(ddb, Xi) - matrix_average_sy(ddb, bv, Xi)/(norm_r(ddb, bv)**2.d0)
     else
       min_hs = trace_re(ddb, Xi) - min(W(1),W(2),W(3)) ;   deallocate(W)
     endif
   else if ( db > 2 ) then  ! lower bound
     min_hs = sum(W(db:ddb)) ;   deallocate(W)
-  endif 
+  endif
   deallocate(Xi)
 endif
 
 end
-!-----------------------------------------------------------------------------------------------------------------------------------
+!------------------------------------------------------------------------------------------------------------------------------------
