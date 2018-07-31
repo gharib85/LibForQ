@@ -1,13 +1,24 @@
 !------------------------------------------------------------------------------------------------------------------------------------
 !                                                        Discord
 !------------------------------------------------------------------------------------------------------------------------------------
-real (8) function discord_He(da, db, rhoAB)
-! Hellinger discord of qubit-qudit subsystems
-! Ref.
-integer :: da, db
-complex(8) :: rhoAB(da*db,da*db)
+real (8) function discord_he(da, db, rho)
+! Hellinger discord of qubit-qudit systems
+! Ref: J. Phys. A: Math. Theor. 49 (2016) 235301
+integer :: da, db, d
+complex(8) :: rho(da*db,da*db), rhosr(da*db,da*db), rhosrA(da,da), rhosrB(db,db)
+real(8) :: W(da**2-1), bvB(db**2-1), bvA(da**2-1), corrmat(da**2-1,db**2-1), op(da**2-1,da**2-1)
+integer :: j, k
 
-  
+d = da*db
+call mat_sqrt(d, rho, rhosr)
+call partial_trace_a_he(rhosr, da, db, rhosrB)
+call bloch_vector_gellmann(db, rhosrB, bvB)
+call partial_trace_b_he(rhosr, da, db, rhosrA)
+call bloch_vector_gellmann(da, rhosrA, bvA)
+call corrmat_gellmann(da, db, rhosr, corrmat)
+call outer_product_re(da**2-1, bvA, bvA, op)
+call lapack_zheevd('N', da**2-1, op+matmul(corrmat,transpose(corrmat)), W)
+discord_he = 2.d0-2.d0*sqrt((trace_he(d,rhosr))**2.d0 + (norm_r(da**2-1,bvB))**2.d0 + maxval(W))
 
 end
 !------------------------------------------------------------------------------------------------------------------------------------
@@ -142,7 +153,8 @@ real(8) :: mK(1:3,1:3)  ! Auxiliary matrix
 real(8) :: W(1:3)  ! For the eigenvalues of K
 real(8) :: trace_he  ! For the trace function
 
-call stokes_parameters_2qb(rho, ma, mb, corr)
+!call stokes_parameters_2qb(rho, ma, mb, corr)
+call corrmat_gellmann_unopt(2, 2, rho, corr)
 
 if (ssys == 'a' ) then
   do m = 1, 3 ;   do n = 1, 3 ;   mK(m,n) = ma(m)*ma(n) ;   enddo ;   enddo ;   mK = mK + matmul(corr,transpose(corr))

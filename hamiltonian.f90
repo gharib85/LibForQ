@@ -28,7 +28,7 @@ ham_J = -0.5d0*ham_J
 
 ! Summing up the Hamiltonian terms -h*s_{j}^{x} (magnetic field in the x=1 direction)
 ham_h = 0.d0 ;   ord_pm = 0
-do j = 1, ns 
+do j = 1, ns
   ord_pm(j) = 1 ;   call kron_prod_pauli_mat(ord_pm, ns, kp_pauli_mat) ;   ham_h = ham_h + kp_pauli_mat
   ord_pm(j) = 0
 enddo
@@ -40,7 +40,7 @@ deallocate ( ham_J, ham_h, ord_pm, kp_pauli_mat )
 
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
-subroutine XY_1D(ns, h, g, ham) ! Returns the Hamiltonian for the 1D XY chain (the exchange energy is set to unity: J=1): 
+subroutine XY_1D(ns, h, g, ham) ! Returns the Hamiltonian for the 1D XY chain (the exchange energy is set to unity: J=1):
 !H = -0.5*J(1+g)*\sum_{j}\sigma_{j}^{x}\sigma_{j+1}^{x} -0.5*J(1-g)*\sum_{j}\sigma_{j}^{y}\sigma_{j+1}^{y} -h*\sum_{j}\sigma_{j}^{z}
 implicit none
 real(8) :: h  ! Transverse field
@@ -76,7 +76,7 @@ ham_Jm = -0.5d0*(1.d0-g)*ham_Jm
 
 ! Summing up the Hamiltonian terms -h*s_{j}^{x} (magnetic field in the x=1 direction)
 ham_h = 0.d0 ;   ord_pm = 0
-do j = 1, ns 
+do j = 1, ns
   ord_pm(j) = 3
   call kron_prod_pauli_mat(ord_pm, ns, kp_pauli_mat) ;   ham_h = ham_h + kp_pauli_mat
   ord_pm(j) = 0

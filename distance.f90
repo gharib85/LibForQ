@@ -73,7 +73,7 @@ real(8) function fidelity_mm(d, rho, zeta)  ! Returns the fidelity between 2 MIX
 implicit none
 integer :: d  ! Dimension of the density matrices
 complex(8) :: rho(1:d,1:d), zeta(1:d,1:d)  ! Density matrices
-real(8) :: r(1:d), z(1:d)  ! Vectors for the eigenvalues of rho and zeta, respectively. 
+real(8) :: r(1:d), z(1:d)  ! Vectors for the eigenvalues of rho and zeta, respectively.
 complex(8) :: A(1:d,1:d)  ! Auxiliary matrix. We use r also for the eigenvalues if A=sqrt(rho)*zeta*sqrt(rho)
 integer :: j, k, l  ! Auxiliary variables for counters
 complex(8) :: outerp(1:d,1:d)  ! For the outer product
@@ -110,7 +110,7 @@ norm_hs = sqrt(norm_hs)
 end
 !------------------------------------------------------------------------------------------------------------------------------------
 real(8) function norm_tr(d, A) ! Returns the TRACE NORM (or 1-norm) of an HERMITIAN matrix A
-! ||A||_1 = sum_j |a_j|, where a_j are the eigenvalues of A 
+! ||A||_1 = sum_j |a_j|, where a_j are the eigenvalues of A
 implicit none
 integer :: d  ! Dimension of the matrix A
 complex(8) :: A(1:d,1:d)  ! Matrix of which want to compute the 1-norm
@@ -122,7 +122,7 @@ call lapack_zheevd('N', d, A, egv) ;   norm_tr = 0.d0 ;   do j = 1, d ;   norm_t
 end
 !------------------------------------------------------------------------------------------------------------------------------------
 real(8) function norm_tr_ge(d, A) ! Returns the TRACE NORM (or 1-norm) of a GENERAL NORMAL matrix A
-! ||A||_1 = \sum_j |a_j|, where a_j are the eigenvalues of A 
+! ||A||_1 = \sum_j |a_j|, where a_j are the eigenvalues of A
 implicit none
 integer :: d  ! Dimension of the matrix A
 complex(8) :: A(1:d,1:d)  ! Matrix of which want to compute the 1-norm

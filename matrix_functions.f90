@@ -1,5 +1,24 @@
 !-----------------------------------------------------------------------------------------------------------------------------------
-!                                                    ARRAY DISPLAY
+subroutine mat_sqrt(d, A, Asr)
+implicit none
+integer :: d, j
+complex(8) :: A(d,d), Asr(d,d), proj(d,d)
+real(8) :: W(d)
+
+Asr = 0.d0
+call lapack_zheevd('V', d, A, W)
+!call array_display(2, 2, A)
+!write(*,*) W(1), W(2)
+do j = 1, d
+  call projector(A(:,j), d, proj)
+  if (W(j) >= 0.d0) then
+    Asr = Asr + sqrt(W(j))*proj
+  else
+    Asr = Asr + (0.d0,1.d0)*sqrt(abs(W(j)))*proj
+  endif
+enddo
+
+end
 !-----------------------------------------------------------------------------------------------------------------------------------
 subroutine array_display_rr(nr, nc, A)  ! Displays a real array on the screen
 implicit none
@@ -43,8 +62,6 @@ Ai = aimag(A) ;   do j = 1, nr ;   print string, Ai(j,:) ;   enddo
 
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
-!                                                     Auxiliary Matrices
-!-----------------------------------------------------------------------------------------------------------------------------------
 subroutine identity_c(d, identity)  ! Returns the complex dxd identity matrix
 implicit none
 integer :: d  ! Dimension of the identity matrix
@@ -52,12 +69,10 @@ complex(8) :: identity(1:d,1:d)  ! Identity matrix
 integer :: j, k  ! Auxiliary variable for counters
 
 forall ( j = 1:d, k = 1:d, j /= k ) identity(j,k) = (0.d0,0.d0) ;   forall ( j = 1:d, k = 1:d, j == k ) identity(j,k) = (1.d0,0.d0)
-  
+
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
-!                                                      Matrix functions
-!-----------------------------------------------------------------------------------------------------------------------------------
-subroutine projector(vec, d, proj)  ! Returns a PROJECTOR on the provided COMPLEX vector 
+subroutine projector(vec, d, proj)  ! Returns a PROJECTOR on the provided COMPLEX vector
 implicit none
 integer :: d  ! Dimension of the vector
 complex(8) :: vec(1:d)  ! Vector we want the projector on
@@ -69,7 +84,7 @@ forall ( j=1:d, k=1:d, j > k ) proj(j,k) = conjg(proj(k,j))  ! Elements below th
 
 end
 !------------------------------------------------------------------------------------------------------------------------------------
-subroutine projector_re(vec, d, proj)  ! Returns a PROJECTOR on the provided REAL vector 
+subroutine projector_re(vec, d, proj)  ! Returns a PROJECTOR on the provided REAL vector
 implicit none
 integer :: d  ! Dimension of the vector
 real(8) :: vec(1:d)  ! Vector we want the projector on
@@ -81,7 +96,7 @@ forall ( j=1:d, k=1:d, j > k ) proj(j,k) = proj(k,j)  ! Elements below the diago
 
 end
 !------------------------------------------------------------------------------------------------------------------------------------
-subroutine kron_prod_pauli_mat(ord_pm, n, kp_pauli_mat)  ! Returns the Kronecker's product of n Pauli matrices. 
+subroutine kron_prod_pauli_mat(ord_pm, n, kp_pauli_mat)  ! Returns the Kronecker's product of n Pauli matrices.
 ! The especification of the order of the matrices is given as input within the vector vec_ord_pm, whose dimension is n
 implicit none
 integer, intent(in):: n  ! Number of qubits
@@ -106,7 +121,7 @@ do i = 1, n - 1
     else if (ord_pm(i) == 2) then ;   M1 = sigma_2 ;   else if (ord_pm(i) == 3) then ;   M1 = sigma_3
          end if
   end if
-  allocate(M1_kp_M2(1:d1*d2,1:d1*d2)) ;   call kronecker_product_c(M1, d1, d1, M2, d2, d2, M1_kp_M2)  
+  allocate(M1_kp_M2(1:d1*d2,1:d1*d2)) ;   call kronecker_product_c(M1, d1, d1, M2, d2, d2, M1_kp_M2)
   deallocate(M1) ;   allocate(M1(1:d1*d2,1:d1*d2)) ;   M1 = M1_kp_M2 ;   deallocate(M1_kp_M2)
 end do
 
@@ -153,7 +168,7 @@ M1_kp_M2 = 0.d0 ;   forall ( i = 1:nr1 , j = 1:nc1 ) M1_kp_M2(nr2*(i-1)+1 : nr2*
 
 end
 !------------------------------------------------------------------------------------------------------------------------------------
-subroutine gram_schmidt(m, n, A, B)  ! Returns, in the coloumns of B, an orthonormal basis obtained from linearly independent vectors 
+subroutine gram_schmidt(m, n, A, B)  ! Returns, in the coloumns of B, an orthonormal basis obtained from linearly independent vectors
 ! given as imput in the columns of A
 ! Ref: Golub, G. H., and Van Loan, C. F. (2013). Matrix Computations (4th ed.). Baltimore: The Johns Hopkins University Press.
 implicit none
@@ -175,7 +190,7 @@ enddo
 
 end
 !------------------------------------------------------------------------------------------------------------------------------------
-subroutine gram_schmidt_modified(m, n, A, B)  ! Returns, in the coloumns of B, an orthonormal basis obtained from linearly 
+subroutine gram_schmidt_modified(m, n, A, B)  ! Returns, in the coloumns of B, an orthonormal basis obtained from linearly
 ! independent vectors given as imput in the columns of A
 ! Ref: Golub, G. H., and Van Loan, C. F. (2013). Matrix Computations (4th ed.). Baltimore: The Johns Hopkins University Press.
 implicit none
@@ -202,6 +217,17 @@ complex(8) :: Ad(1:n,1:m)  ! Adjoint of the matrix A
 integer :: j, k  ! Auxiliary variables for counters
 
 forall( j = 1:m, k = 1:n ) Ad(k,j) = conjg(A(j,k))
+
+end
+!------------------------------------------------------------------------------------------------------------------------------------
+subroutine outer_product_re(d, psi, phi, op)  ! Returns the outer product of two vectors
+implicit none
+integer :: d  ! Dimension of the vectors
+real(8) :: psi(1:d), phi(1:d)  ! The vectors
+real(8) :: op(1:d,1:d)  ! The outer product matrix
+integer :: j, k  ! Auxiliary variables for counters
+
+forall (j=1:d, k=1:d) op(j,k) = psi(j)*phi(k)
 
 end
 !------------------------------------------------------------------------------------------------------------------------------------
@@ -243,8 +269,6 @@ do j = 1, m ;   do k = 1, o
 enddo ;   enddo
 
 end
-!-----------------------------------------------------------------------------------------------------------------------------------
-!                                                     Scalar functions
 !-----------------------------------------------------------------------------------------------------------------------------------
 real(8) function trace_he(d, A)  ! Returns the TRACE of an HERMITIAN matrix A
 implicit none
@@ -294,19 +318,19 @@ enddo ;   enddo
 
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
-real(8) function matrix_average_sy(d, x, A)  ! Returns the average of a SYMMETRIC MATRIX A for a real vector x
+real(8) function matrix_average_sy(d, psi, A)  ! Returns the average of a SYMMETRIC MATRIX A for a real vector x
 implicit none
 integer :: d  ! Dimension of the vector and operator
-real(8) :: x(1:d)  ! the real vector
+real(8) :: psi(1:d)  ! the real vector
 real(8) :: A(1:d,1:d)  ! The operator whose average is to be computed
 integer :: j, k  ! Auxiliary variables for counters
 
 matrix_average_sy = 0.d0
 ! 'diagonal' part
-do j = 1, d ;   matrix_average_sy = matrix_average_sy + A(j,j)*x(j)**2.d0 ;   enddo
+do j = 1, d ;   matrix_average_sy = matrix_average_sy + A(j,j)*psi(j)**2.d0 ;   enddo
 ! 'off-diagobal' part
 do j = 1, d-1 ;   do k = j+1, d
-  matrix_average_sy = matrix_average_sy + 2.d0*A(j,k)*x(j)*x(k)
+  matrix_average_sy = matrix_average_sy + 2.d0*A(j,k)*psi(j)*psi(k)
 enddo ;   enddo
 
 end
