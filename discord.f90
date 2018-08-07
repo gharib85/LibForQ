@@ -1,25 +1,23 @@
 !------------------------------------------------------------------------------------------------------------------------------------
 !                                                        Discord
 !------------------------------------------------------------------------------------------------------------------------------------
-real (8) function discord_he(da, db, rho)
-! Hellinger discord of qubit-qudit systems
-! Ref: J. Phys. A: Math. Theor. 49 (2016) 235301
-integer :: da, db, d
-complex(8) :: rho(da*db,da*db), rhosr(da*db,da*db), rhosrA(da,da), rhosrB(db,db)
-real(8) :: W(da**2-1), bvB(db**2-1), bvA(da**2-1), corrmat(da**2-1,db**2-1), op(da**2-1,da**2-1)
-integer :: j, k
-
-d = da*db
-call mat_sqrt(d, rho, rhosr)
-call partial_trace_a_he(rhosr, da, db, rhosrB)
-call bloch_vector_gellmann(db, rhosrB, bvB)
-call partial_trace_b_he(rhosr, da, db, rhosrA)
-call bloch_vector_gellmann(da, rhosrA, bvA)
-call corrmat_gellmann(da, db, rhosr, corrmat)
-call outer_product_re(da**2-1, bvA, bvA, op)
-call lapack_zheevd('N', da**2-1, op+matmul(corrmat,transpose(corrmat)), W)
-discord_he = 2.d0-2.d0*sqrt((trace_he(d,rhosr))**2.d0 + (norm_r(da**2-1,bvB))**2.d0 + maxval(W))
-
+real (8) function discord_he(da,db,rho)
+  ! Hellinger discord of qubit-qudit systems
+  ! Ref: J. Phys. A: Math. Theor. 49 (2016) 235301
+  integer :: da, db, d
+  complex(8) :: rho(da*db,da*db), rhosr(da*db,da*db), rhosrA(da,da), rhosrB(db,db)
+  real(8) :: W(da**2-1), bvB(db**2-1), bvA(da**2-1), corrmat(da**2-1,db**2-1), op(da**2-1,da**2-1)
+  integer :: j, k
+  d = da*db;  call array_display(4,4,rho)
+  call mat_sqrt(d,rho,rhosr); call array_display(4,4,rhosr)
+  call partial_trace_a_he(rhosr, da, db, rhosrB)
+  call bloch_vector_gellmann(db, rhosrB, bvB)
+  call partial_trace_b_he(rhosr, da, db, rhosrA)
+  call bloch_vector_gellmann(da, rhosrA, bvA)
+  call corrmat_gellmann(da, db, rhosr, corrmat)
+  call outer_product_re(da**2-1, bvA, bvA, op)
+  call lapack_zheevd('N', da**2-1, op+matmul(corrmat,transpose(corrmat)), W)
+  discord_he = 2.d0-2.d0*sqrt((trace_he(d,rhosr))**2.d0 + (norm_r(da**2-1,bvB))**2.d0 + maxval(W))
 end
 !------------------------------------------------------------------------------------------------------------------------------------
 real(8) function discord_oz_bds(rho)  ! Returns the OLLIVIER-ZUREK discord for 2-qubit Bell-diagonal states
