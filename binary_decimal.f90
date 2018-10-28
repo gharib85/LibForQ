@@ -26,7 +26,7 @@ integer :: i  ! Auxiliary variable for counters
 
 vec_bin = 0  ! initialization
 do i = 1, nd
-  if (2**(nd-i) <= dec) then ;   vec_bin(i) = 1 ;   dec = dec - 2**(nd-i) ;   end if   
+  if (2**(nd-i) <= dec) then ;   vec_bin(i) = 1 ;   dec = dec - 2**(nd-i) ;   end if
 end do
 
 end
