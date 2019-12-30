@@ -1,4 +1,23 @@
-!-----------------------------------------------------------------------------------------------------------------------------------
+!-------------------------------------------------------------------------------
+subroutine mat_pows(d, A, s, As)
+implicit none
+integer :: d, j
+complex(8) :: A(d,d), As(d,d), proj(d,d)
+real(8) :: W(d), s
+
+As = 0.d0
+call lapack_zheevd('V', d, A, W)
+do j = 1, d
+  call projector(A(:,j), d, proj)
+  if (W(j) >= 0.d0) then
+    As = As + (W(j)**s)*proj
+  else
+    As = As + (0.d0,1.d0)*((abs(W(j)))**s)*proj
+  endif
+enddo
+
+end
+!-------------------------------------------------------------------------------
 subroutine mat_sqrt(d, A, Asr)
 implicit none
 integer :: d, j
@@ -7,8 +26,6 @@ real(8) :: W(d)
 
 Asr = 0.d0
 call lapack_zheevd('V', d, A, W)
-!call array_display(2, 2, A)
-!write(*,*) W(1), W(2)
 do j = 1, d
   call projector(A(:,j), d, proj)
   if (W(j) >= 0.d0) then
@@ -19,7 +36,7 @@ do j = 1, d
 enddo
 
 end
-!-----------------------------------------------------------------------------------------------------------------------------------
+!-------------------------------------------------------------------------------
 subroutine array_display_rr(nr, nc, A)  ! Displays a real array on the screen
 implicit none
 integer :: nr, nc  ! No. of rows and columns of the matrix
@@ -164,7 +181,8 @@ complex(8) :: M1(1:nr1,1:nc1), M2(1:nr2,1:nc2)  ! Matrices to take the tensor pr
 complex(8) :: M1_kp_M2(1:nr1*nr2,1:nc1*nc2)  ! Matrix containing the tensor product of M1 and M2
 integer :: i, j  ! Auxiliary variables for counters
 
-M1_kp_M2 = 0.d0 ;   forall ( i = 1:nr1 , j = 1:nc1 ) M1_kp_M2(nr2*(i-1)+1 : nr2*i , nc2*(j-1)+1 : nc2*j)  =  M1(i,j)*M2
+M1_kp_M2 = 0.d0 ;
+forall ( i = 1:nr1 , j = 1:nc1 ) M1_kp_M2(nr2*(i-1)+1 : nr2*i , nc2*(j-1)+1 : nc2*j)  =  M1(i,j)*M2
 
 end
 !------------------------------------------------------------------------------------------------------------------------------------
@@ -267,6 +285,16 @@ AB = (0.d0,0.d0)
 do j = 1, m ;   do k = 1, o
   do l = 1, n ;   if ( (abs(A(j,l)) > 1.d-15) .and. (abs(B(l,k)) > 1.d-15) )  AB(j,k) = AB(j,k) + A(j,l)*B(l,k) ;   enddo
 enddo ;   enddo
+
+end
+!-----------------------------------------------------------------------------------------------------------------------------------
+real(8) function trace(d, A)  ! Returns the TRACE of an ARBITRARY matrix A
+implicit none
+integer :: d  ! Dimension of the matrix
+complex(8) :: A(1:d,1:d)  ! Matrix whose trace is computed
+integer :: j  ! Auxiliary variable for counters
+
+trace = 0.d0 ;   do j = 1, d ;   trace = trace + A(j,j) ;   end do
 
 end
 !-----------------------------------------------------------------------------------------------------------------------------------

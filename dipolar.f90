@@ -1,4 +1,4 @@
-!-----------------------------------------------------------------------------------------------------------------------------------
+!-------------------------------------------------------------------------------
 ! gfortran dipolar.f90 /usr/local/lib/libforq.a -llapack -lblas
 program dipolar
   call Et()
@@ -7,6 +7,41 @@ program dipolar
   !call Emax_rho()
   !call EEpsi()
   !call EErho()
+end
+!-------------------------------------------------------------------------------
+subroutine asy_psi()  ! asymmetry of the initial pure state
+real(8) :: tha, thb, dth, asy, asy_wyd
+complex(8) :: psia(2), psib(2), psiI(4), rho(4,4), L(4,4)
+open(unit=13, file="asy_psi.dat", status="unknown")
+
+call dipolarH(L)
+dth = 0.01d0
+tha = 0.d0 - dth
+doa: do
+  tha = tha + dth
+  call psi_qubit(tha, 0.d0, psia)
+  thb = 0.d0 - dth
+  dob: do
+    thb = thb + dth
+    call psi_qubit(thb, 0.d0, psib);
+    call kronecker_product_c(psia, 2, 1, psib, 2, 1, psiI);
+    call projector(psiI, 4, rho)
+    asy = asy_wyd(4,0.5d0,rho,L)
+    write(13,*) tha, thb, asy
+  enddo dob
+enddo doa
+
+end
+!-------------------------------------------------------------------------------
+subroutine dipolarH(H)
+complex(8) :: H(4,4), psip(4), psim(4), phip(4), phim(4), proj1(4,4), proj2(4,4)
+complex(8) :: proj3(4,4), proj4(4,4)
+
+call bell_basis(psip, psim, phip, phim)
+call projector(psim, 4, proj1);  call projector(psip, 4, proj2)
+call projector(phim, 4, proj3);  call projector(phip, 4, proj4)
+H = 0.d0*proj1 + 2.d0*proj2 - proj3 - proj4
+
 end
 !-----------------------------------------------------------------------------------------------------------------------------------
 ! pure-prouct initial state, changing t
